@@ -58,13 +58,13 @@ function LandingPage() {
             background="transparent"
             minSize={0.4}
             maxSize={1}
-            particleDensity={1200}
+            particleDensity={600}
             className="w-full h-full min-h-[300px] sm:min-h-[400px] md:min-h-[500px]"
             particleColor="#FFFFFF"
           />
 
           {/* Radial Gradient to prevent sharp edges */}
-          <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(350px_200px_at_top,transparent_20%,white)]"></div>
+          <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(700px_200px_at_top,transparent_20%,white)]"></div>
         </div>
 
         {/* Card Components*/}
