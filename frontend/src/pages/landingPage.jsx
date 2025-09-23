@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { CardSpotlight } from "@/components/ui/card-spotlight";
 import { SparklesCore } from "@/components/ui/sparkles";
-
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 function LandingPage() {
   return (
@@ -12,11 +12,11 @@ function LandingPage() {
         <div className="flex items-center gap-2">
           <span className="text-xl sm:text-2xl font-bold text-white tracking-wide">Budget Buddy</span>
         </div>
-        <div className="flex gap-4 sm:gap-8 items-center">
-          <Link to="/login" className="bg-white text-black font-semibold px-4 sm:px-5 py-2 rounded-lg shadow hover:bg-gray-100 transition">
+        <Link to="/login">
+          <div className="flex gap-4 bg-black   sm:gap-8 items-center border-gray-300 border-[1px] rounded-3xl hover:text-black text-white font-semibold px-4 sm:px-5 py-1   hover:bg-gray-100 transition">
             Login
-          </Link>
-        </div>
+          </div>
+        </Link>
       </nav>
 
       {/* Hero Section */}
@@ -26,14 +26,19 @@ function LandingPage() {
           <h1 className="text-3xl sm:text-5xl 2xl:text-7xl xl:text-5xl w-full sm:w-[80%] md:w-[50%] font-bold text-white text-center mb-4 sm:mb-6 leading-tight">
             Take Control of Your<br />Financial Future
           </h1>
-          <p className="text-lg 2xl:text-2xl xl:text-xl sm:text-2xl text-gray-300  mb-6 sm:mb-8 w-full sm:w-[80%] md:w-[50%] text-center">
+          <p className="text-lg 2xl:text-xl xl:text-sm sm:text-2xl text-gray-300  mb-6 sm:mb-8 w-full sm:w-[80%] md:w-[45%] text-center">
             Advanced analytics and intelligent insights to track expenses, plan budgets, and achieve your financial goals with precision and ease.
           </p>
-          <div className="flex gap-2 sm:gap-4">
-            <Link to="/register" className="bg-white text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:bg-gray-100 transition">
+          <Link to="/register" className="   ">
+            <HoverBorderGradient
+              containerClassName="rounded-full"
+              as="button"
+              className=" bg-white text-black dark:bg-gray-900 dark:text-white flex    items-center space-x-2 cursor-pointer"
+            >
               Get Started
-            </Link>
-          </div>
+            </HoverBorderGradient>
+          </Link>
+
         </div>
       </section>
 
