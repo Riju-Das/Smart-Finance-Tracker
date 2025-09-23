@@ -47,7 +47,7 @@ function LoginPage() {
 
   return (
     <div className=" min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black px-2 overflow-y-auto">
-      <div className="shadow-input mx-auto w-110 rounded-none bg-white p-4 md:rounded-2xl md:p-8 dark:bg-black">
+      <div className="shadow-input mx-auto w-110 rounded-none bg-white p-4 md:rounded-2xl md:p-10  dark:bg-black">
         <h1 className="text-2xl font-bold text-center my-5 text-neutral-800 dark:text-neutral-200">
           Welcome to Budget Buddy
         </h1>
@@ -111,7 +111,7 @@ function LoginPage() {
 
           <div className="my-5 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
           <div className="w-full text-center">
-            <Link to="/register" className=" text-white">
+            <Link to="/register" className=" text-white hover:text-gray-300 transition ">
               Don't have an account? Sign Up
             </Link>
           </div>

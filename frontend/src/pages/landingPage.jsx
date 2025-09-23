@@ -13,7 +13,7 @@ function LandingPage() {
           <span className="text-xl sm:text-2xl font-bold text-white tracking-wide">Budget Buddy</span>
         </div>
         <Link to="/login">
-          <div className="flex gap-4 bg-black   sm:gap-8 items-center border-gray-300 border-[1px] rounded-3xl hover:text-black text-white font-semibold px-4 sm:px-5 py-1   hover:bg-gray-100 transition">
+          <div className="flex gap-4 bg-black   sm:gap-8 items-center border-gray-300 border-[1px] rounded-3xl hover:text-black text-white font-semibold px-4 sm:px-5 py-1   hover:bg-gray-100 ">
             Login
           </div>
         </Link>
