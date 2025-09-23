@@ -37,7 +37,7 @@ async function login(req, res) {
   try {
     const { username, password } = req.body;
     const user = await db.findUserByUsername(username);
-    if (!user) return res.status(401).json({ message: "user does not exist" })
+    if (!user) return res.status(401).json({ message: "username does not exist" })
 
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) return res.status(401).json({ message: "incorrect password" });
@@ -102,9 +102,19 @@ async function logout(req, res) {
   }
 }
 
+async function userDetail(req,res) {
+  const user = req.user;
+  if(!user){
+    return res.status(401).json({message:"Auth error"})
+  }
+  const { id, username, fullname, email } = user;
+  return res.status(200).json({id , username , fullname , email})
+}
+
 module.exports = {
   register,
   login,
   refresh,
-  logout
+  logout,
+  userDetail
 }

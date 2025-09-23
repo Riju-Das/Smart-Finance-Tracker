@@ -13,7 +13,7 @@ function LandingPage() {
           <span className="text-xl sm:text-2xl font-bold text-white tracking-wide">Budget Buddy</span>
         </div>
         <div className="flex gap-4 sm:gap-8 items-center">
-          <Link className="bg-white text-black font-semibold px-4 sm:px-5 py-2 rounded-lg shadow hover:bg-gray-100 transition">
+          <Link to="/login" className="bg-white text-black font-semibold px-4 sm:px-5 py-2 rounded-lg shadow hover:bg-gray-100 transition">
             Login
           </Link>
         </div>
@@ -23,14 +23,14 @@ function LandingPage() {
       <section className=" bg-gradient-to-br from-black via-gray-900 to-black flex-1 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 py-10 sm:py-20 h-[85vh] w-screen mx-auto">
         {/* Left: Headline and CTA */}
         <div className="flex-1 flex flex-col justify-center items-center">
-          <h1 className="text-3xl sm:text-5xl md:text-7xl w-full sm:w-[80%] md:w-[50%] font-bold text-white text-center mb-4 sm:mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl 2xl:text-7xl xl:text-5xl w-full sm:w-[80%] md:w-[50%] font-bold text-white text-center mb-4 sm:mb-6 leading-tight">
             Take Control of Your<br />Financial Future
           </h1>
-          <p className="text-lg sm:text-2xl text-gray-300 mb-6 sm:mb-8 w-full sm:w-[80%] md:w-[50%] text-center">
+          <p className="text-lg 2xl:text-2xl xl:text-xl sm:text-2xl text-gray-300  mb-6 sm:mb-8 w-full sm:w-[80%] md:w-[50%] text-center">
             Advanced analytics and intelligent insights to track expenses, plan budgets, and achieve your financial goals with precision and ease.
           </p>
           <div className="flex gap-2 sm:gap-4">
-            <Link className="bg-white text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:bg-gray-100 transition">
+            <Link to="/register" className="bg-white text-black font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-lg shadow hover:bg-gray-100 transition">
               Get Started
             </Link>
           </div>
