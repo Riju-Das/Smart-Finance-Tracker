@@ -3,7 +3,6 @@ import { useNavigate,Outlet } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/navbar'
 import { useAuthStore } from './store/authStore'
-import { useFieldArray } from 'react-hook-form' 
 import api from './lib/api'
 import { LoaderOne } from "@/components/ui/loader";
 

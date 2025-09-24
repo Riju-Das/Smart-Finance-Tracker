@@ -3,6 +3,8 @@ import LoginPage from "./pages/loginPage"
 import RegisterPage from "./pages/registerPage"
 import App from "./App"
 import Dashboard from "./pages/dashboard"
+import TransactionPage from "./pages/transactionPage"
+import CategoryPage from "./pages/categoryPage"
 
 const route = [
   {
@@ -23,6 +25,14 @@ const route = [
       {
         path: "/dashboard",
         element:<Dashboard/>
+      },
+      {
+        path:"/transactions",
+        element: <TransactionPage/>
+      },
+      {
+        path:"/category",
+        element:<CategoryPage/>
       }
     ]
 

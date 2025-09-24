@@ -23,6 +23,7 @@ model User {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   transactions  Transaction[]
+  category      Category[]
   refreshTokens String[]      @default([])
 }
 
@@ -44,6 +45,9 @@ model Category {
   id           String        @id @default(uuid())
   name         String
   transactions Transaction[]
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 enum TransactionType {
