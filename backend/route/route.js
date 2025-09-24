@@ -6,7 +6,7 @@ const route = express.Router()
 route.post("/register", AuthController.register);
 route.post("/login" , AuthController.login);
 route.post("/refresh", AuthController.refresh);
-route.post("/logout", authenticateToken, AuthController.logout)
+route.post("/logout", AuthController.logout)
 route.get("/user-detail" , authenticateToken, AuthController.userDetail)
 
 module.exports= route

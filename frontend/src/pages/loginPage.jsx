@@ -29,6 +29,7 @@ function LoginPage() {
       const userRes = await api.get("/user-detail");
       setUser(userRes.data);
       console.log(userRes.data)
+      navigate("/dashboard")
     }
     catch (err) {
       console.error(err);
