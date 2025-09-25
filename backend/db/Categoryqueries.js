@@ -6,6 +6,9 @@ async function getCategoryByUserId(id){
   return await prisma.category.findMany({
     where:{
       userId:id
+    },
+    orderBy:{
+      date: 'desc'
     }
   })
 }

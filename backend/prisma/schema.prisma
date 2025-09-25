@@ -45,9 +45,9 @@ model Category {
   id           String        @id @default(uuid())
   name         String
   transactions Transaction[]
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
+  date         DateTime      @default(now())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id])
 }
 
 enum TransactionType {

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { useNavigate,Outlet } from 'react-router-dom'
+import { useNavigate, Outlet } from 'react-router-dom'
 import './App.css'
 import Navbar from './components/navbar'
 import { useAuthStore } from './store/authStore'
 import api from './lib/api'
 import { LoaderOne } from "@/components/ui/loader";
+import { useCategoryStore } from './store/categoryStore'
 
 
 function App() {
@@ -15,6 +16,8 @@ function App() {
   const setUser = useAuthStore((state) => state.setUser);
   const logout = useAuthStore((state) => state.logout)
   const [loaded, setLoaded] = useState(false)
+  const [categoryLoaded, setCategoryLoaded] = useState(false)
+  const setCategories = useCategoryStore((state) => state.setCategories)
 
   async function fetchSession() {
     try {
@@ -37,12 +40,29 @@ function App() {
     }
   }
 
+  async function fetchCategories() {
+    try {
+      const res = await api.get("/categories");
+      setCategories(res.data)
+      setCategoryLoaded(true)
+    }
+    catch (err) {
+      alert(err?.response?.data?.message || "Failed to fetch categories")
+    }
+  }
+
+  useEffect(() => {
+    if (loaded) {
+      fetchCategories()
+    }
+  }, [loaded])
+
   useEffect(() => {
     fetchSession()
   }, [accessToken, user, setAccessToken, setUser, logout])
 
   return (
-    loaded ? (
+    loaded && categoryLoaded ? (
       <div className='flex flex-col md:flex-row min-h-screen h-screen'>
         <Navbar />
 

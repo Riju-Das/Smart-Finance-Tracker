@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "public"."Category" ADD COLUMN     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;

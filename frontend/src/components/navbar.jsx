@@ -21,7 +21,7 @@ function Navbar() {
   async function handleLogout() {
     await api.post("/logout")
     logout()
-    navigate("/login")
+    navigate("/")
   }
 
   const links = [
