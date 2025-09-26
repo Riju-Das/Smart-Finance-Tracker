@@ -24,7 +24,7 @@ function CategoryPage() {
   const [dialogOpen2, setDialogOpen2] = useState(false);
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
   const [editDialogIndex, setEditDialogIndex] = useState(null);
-
+  const [searchCategory, setSearchCategory] = useState("")
   const {
     register,
     handleSubmit,
@@ -85,7 +85,7 @@ function CategoryPage() {
     <div className="min-h-screen md:p-10 p-3 bg-gradient-to-br from-black via-gray-900 to-black ">
 
 
-      <h1 className="2xl:text-5xl md:mb-8 xl:text-4xl text-xl mb-5 font-semibold text-white">
+      <h1 className="2xl:text-5xl md:mb-8 xl:text-4xl text-3xl mb-5 font-semibold text-white">
         Category
       </h1>
       <div>
@@ -146,35 +146,42 @@ function CategoryPage() {
         </Dialog>
 
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 my-8 ">
-        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6  text-white shadow">
-          <div className="text-lg font-semibold">Total Categories</div>
-          <div className="text-2xl font-bold mt-2">{categories.length}</div>
+      <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
+        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+          <div className="md:text-lg text-xs font-semibold">Total Categories</div>
+          <div className="md:text-2xl text-xs  font-bold md:mt-2">{categories.length}</div>
         </div>
-        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6 text-white shadow">
-          <div className="text-lg font-semibold">Total Income</div>
-          <div className="text-2xl font-bold mt-2">₹0</div>
+        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+          <div className="md:text-lg text-xs font-semibold">Total Income</div>
+          <div className="md:text-2xl font-bold text-xs md:mt-2">₹0</div>
         </div>
-        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6 text-white shadow">
-          <div className="text-lg font-semibold">Total Expenses</div>
-          <div className="text-2xl font-bold mt-2">₹0</div>
+        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+          <div className="md:text-lg text-xs font-semibold">Total Expenses</div>
+          <div className="md:text-2xl text-xs font-bold md:mt-2">₹0</div>
         </div>
-        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6 text-white shadow">
-          <div className="text-lg font-semibold">Most Used</div>
-          <div className="text-2xl font-bold mt-2">Food</div>
+        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+          <div className="md:text-lg text-xs font-semibold">Most Used</div>
+          <div className="md:text-2xl text-xs font-bold md:mt-2">Food</div>
         </div>
       </div>
 
       <div className='grid grid-cols-1  gap-6 my-8 '>
 
         <div className='bg-gray-950/50 rounded-xl p-4  md:p-6 md:py-4 md:text-xl grid grid-cols-1 gap-6 border  border-gray-900 text-white shadow-xl'>
-          <div className='md:text-2xl font-semibold'>
-            Category Management
+          <div className='md:text-2xl font-semibold flex w-full justify-between'>
+            <span>
+              Category Management
+            </span>
+            
+              <input type="text" name="" id="" className='rounded-3xl border-2 border-white/10 px-2 md:px-5  md:text-base text-xs font-normal h-8 md:h-10' placeholder='Search' onChange={(e)=>setSearchCategory(e.target.value)}/>
+              
           </div>
           <div className='flex flex-col items-center w-full gap-3'>
             {
               categories.length > 0 ? (
-                categories.map((category, idx) => (
+                categories.filter(category=>
+                  category.name.toLowerCase().includes(searchCategory)
+                ).map((category, idx) => (
                   <div key={category.id} className='w-full flex md:px-7 flex-row px-4 rounded-xl py-3 sm:px-6 2xl:py-3 bg-gray-900   items-center shadow-lg '>
 
                     <div className='w-1/2 flex items-center h-full text-white  text-xs 2xl:text-lg xl:text-md  '>
@@ -249,7 +256,7 @@ function CategoryPage() {
 
 
 
-                      <span  onClick={()=>handleDeleteCategory(category.id)}>
+                      <span onClick={() => handleDeleteCategory(category.id)}>
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 xl:h-6 xl:w-6 text-gray-300 hover:text-red-500 transition-colors duration-150 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
@@ -260,6 +267,7 @@ function CategoryPage() {
                 ))
               ) : (
                 <div className='text-gray-500 mb-3 md:text-base text-xs'>
+
                   Create your first category
                 </div>
               )

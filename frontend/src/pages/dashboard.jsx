@@ -7,15 +7,15 @@ function Dashboard() {
         Welcome, {user.fullname}
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 ">
-        <div className="bg-white/10 rounded-xl p-6  text-white shadow">
+        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6  text-white shadow">
           <div className="text-lg font-semibold">Total Balance</div>
           <div className="text-2xl font-bold mt-2">₹0</div>
         </div>
-        <div className="bg-white/10 rounded-xl p-6 text-white shadow">
+        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6 text-white shadow">
           <div className="text-lg font-semibold">Total Income</div>
           <div className="text-2xl font-bold mt-2">₹0</div>
         </div>
-        <div className="bg-white/10 rounded-xl p-6 text-white shadow">
+        <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6 text-white shadow">
           <div className="text-lg font-semibold">Total Expenses</div>
           <div className="text-2xl font-bold mt-2">₹0</div>
         </div>
