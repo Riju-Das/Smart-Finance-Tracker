@@ -36,7 +36,7 @@ async function createTransaction(userId, categoryId , type, amount , description
       type: type,
       amount:amount,
       description:description,
-      date: date
+      date: new Date(date)
     }
   })
 }
@@ -52,7 +52,7 @@ async function updateTransactionById(id, userId, categoryId , type, amount , des
       type: type,
       amount:amount,
       description:description,
-      date:date
+      date: new Date(date)
     }
   })
 }

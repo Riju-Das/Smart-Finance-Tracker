@@ -21,7 +21,6 @@ function CategoryPage() {
   const navigate = useNavigate()
   const categories = useCategoryStore((state) => state.categories)
   const [dialogOpen1, setDialogOpen1] = useState(false);
-  const [dialogOpen2, setDialogOpen2] = useState(false);
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
   const [editDialogIndex, setEditDialogIndex] = useState(null);
   const [searchCategory, setSearchCategory] = useState("")

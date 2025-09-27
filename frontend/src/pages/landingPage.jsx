@@ -60,7 +60,7 @@ function LandingPage() {
 
   return (
     <div className="overflow-x-hidden min-h-screen">
-      {/* Navbar */}
+    
       <nav className="flex items-center justify-between px-4 sm:px-8 md:px-20 py-4 bg-black shadow-lg border-b border-b-white/10 ">
         <div className="flex items-center gap-2">
           <span className="text-xl sm:text-2xl font-bold text-white tracking-wide">Budget Buddy</span>
@@ -80,9 +80,9 @@ function LandingPage() {
         }
       </nav>
 
-      {/* Hero Section */}
+
       < section className=" bg-gradient-to-br from-black via-gray-900 to-black flex-1 flex flex-col md:flex-row items-center justify-between px-4 sm:px-8 py-10 sm:py-20 h-[85vh] w-screen mx-auto" >
-        {/* Left: Headline and CTA */}
+      
         < div className="flex-1 flex flex-col justify-center items-center" >
           <h1 className="text-3xl sm:text-5xl 2xl:text-7xl xl:text-5xl w-full sm:w-[80%] md:w-[50%] font-bold text-white text-center mb-4 sm:mb-6 leading-tight">
             Take Control of Your<br />Financial Future
@@ -104,23 +104,23 @@ function LandingPage() {
         </div >
       </section >
 
-      {/* Features Section */}
+      
       < section className="relative bg-black py-10 sm:py-16 flex flex-col items-center justify-center w-full" >
-        {/* Features Section Text Above Sparkles */}
+      
         < div className="relative z-10 text-center w-full px-2 sm:px-0" >
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2 sm:mb-4">Powerful Features for Smart Money Management</h2>
           <p className="text-gray-400 text-base sm:text-lg">Everything you need to master your finances in one intelligent platform</p>
         </div >
 
-        {/* Sparkles Effect */}
+    
         < div className="absolute top-0 left-0 z-0 w-full h-full flex flex-col items-center justify-center" >
-          {/* Gradients */}
+    
           < div className="absolute inset-x-8 sm:inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-[2px] w-3/4 blur-sm" />
           <div className="absolute inset-x-8 sm:inset-x-20 top-0 bg-gradient-to-r from-transparent via-indigo-500 to-transparent h-px w-3/4" />
           <div className="absolute inset-x-24 sm:inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-[5px] w-1/4 blur-sm" />
           <div className="absolute inset-x-24 sm:inset-x-60 top-0 bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px w-1/4" />
 
-          {/* Core component */}
+        
           <SparklesCore
             background="transparent"
             minSize={0.4}
@@ -130,11 +130,11 @@ function LandingPage() {
             particleColor="#FFFFFF"
           />
 
-          {/* Radial Gradient to prevent sharp edges */}
+        
           <div className="absolute inset-0 w-full h-full bg-black [mask-image:radial-gradient(700px_200px_at_top,transparent_20%,white)]"></div>
         </div >
 
-        {/* Card Components*/}
+      
         < div className="flex flex-col md:flex-row items-center justify-center gap-8 sm:gap-12 md:gap-15 my-8 sm:my-10 w-full px-2" >
           <CardSpotlight className="p-6 sm:p-10 w-full sm:w-96 h-80 sm:h-96 flex flex-col items-center">
             <p className="text-xl sm:text-2xl font-bold relative z-20 mt-2 text-white">

@@ -6,6 +6,7 @@ import { useAuthStore } from './store/authStore'
 import api from './lib/api'
 import { LoaderOne } from "@/components/ui/loader";
 import { useCategoryStore } from './store/categoryStore'
+import { useTransactionStore } from './store/transactionStore'
 
 
 function App() {
@@ -17,7 +18,9 @@ function App() {
   const logout = useAuthStore((state) => state.logout)
   const [loaded, setLoaded] = useState(false)
   const [categoryLoaded, setCategoryLoaded] = useState(false)
+  const [transactionLoaded , setTransactionLoaded] = useState(false)
   const setCategories = useCategoryStore((state) => state.setCategories)
+  const setTransactions = useTransactionStore((state)=>state.setTransactions)
 
   async function fetchSession() {
     try {
@@ -51,6 +54,24 @@ function App() {
     }
   }
 
+  async function fetchTransactions(){
+    try{
+      const res= await api.get("/transactions");
+      setTransactions(res.data);
+      setTransactionLoaded(true)
+
+    }
+    catch(err){
+      alert(err?.response?.data?.message || "Failed to fetch transactions")
+    }
+  }
+  
+  useEffect(()=>{
+    if(loaded){
+      fetchTransactions()
+    }
+  } , [loaded])
+
   useEffect(() => {
     if (loaded) {
       fetchCategories()
@@ -62,7 +83,7 @@ function App() {
   }, [accessToken, user, setAccessToken, setUser, logout])
 
   return (
-    loaded && categoryLoaded ? (
+    loaded && categoryLoaded && transactionLoaded ? (
       <div className='flex flex-col md:flex-row min-h-screen h-screen'>
         <Navbar />
 

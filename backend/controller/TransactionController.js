@@ -38,11 +38,19 @@ async function createTransaction(req, res) {
     if (date && (isNaN(Date.parse(date)))) {
       return res.status(400).json({ message: "Invalid date format" });
     }
-
+    console.log({
+      userId: user.id,
+      categoryId,
+      type,
+      amount,
+      description,
+      date
+    });
     const transaction = await db.createTransaction(user.id, categoryId, type, Number(amount), description, date)
     return res.status(201).json(transaction)
   }
   catch (err) {
+    console.log(err)
     return res.status(500).json({ message: "Couldn't create transaction" })
   }
 }
@@ -75,9 +83,6 @@ async function updateTransactionById(req, res) {
       return res.status(400).json({ message: "Proper description is required" });
     }
 
-    if (date && (isNaN(Date.parse(date)))) {
-      return res.status(400).json({ message: "Invalid date format" });
-    }
 
     const TransactionUserId = await db.getUserIdByTransactionId(id)
 
