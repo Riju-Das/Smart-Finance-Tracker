@@ -22,6 +22,8 @@ function App() {
   const setCategories = useCategoryStore((state) => state.setCategories)
   const setTransactions = useTransactionStore((state)=>state.setTransactions)
 
+  const fetchTransactionSummary = useTransactionStore((state)=>state.fetchTransactionSummary)
+
   async function fetchSession() {
     try {
       if (!accessToken) {
@@ -59,6 +61,8 @@ function App() {
       const res= await api.get("/transactions");
       setTransactions(res.data);
       setTransactionLoaded(true)
+
+      await fetchTransactionSummary()
 
     }
     catch(err){

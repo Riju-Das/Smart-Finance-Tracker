@@ -21,4 +21,6 @@ route.post("/transactions", authenticateToken, TransactionController.createTrans
 route.put("/transactions/:id", authenticateToken, TransactionController.updateTransactionById)
 route.delete("/transactions/:id", authenticateToken, TransactionController.deleteTransactionById)
 
+route.get("/transactions/summary" , authenticateToken , TransactionController.getTransactionSummary)
+
 module.exports= route

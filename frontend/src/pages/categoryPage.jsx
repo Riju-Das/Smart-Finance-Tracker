@@ -1,4 +1,5 @@
 import { useCategoryStore } from '../store/categoryStore';
+import { useTransactionStore } from '../store/transactionStore';
 import {
   Dialog,
   DialogClose,
@@ -24,6 +25,8 @@ function CategoryPage() {
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
   const [editDialogIndex, setEditDialogIndex] = useState(null);
   const [searchCategory, setSearchCategory] = useState("")
+  const transactionSummary = useTransactionStore((state)=>state.transactionSummary)
+
   const {
     register,
     handleSubmit,
@@ -152,11 +155,11 @@ function CategoryPage() {
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Income</div>
-          <div className="md:text-2xl font-bold text-xs md:mt-2">₹0</div>
+          <div className="md:text-2xl font-bold text-xs md:mt-2">₹{transactionSummary.totalIncome}</div>
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Expenses</div>
-          <div className="md:text-2xl text-xs font-bold md:mt-2">₹0</div>
+          <div className="md:text-2xl text-xs font-bold md:mt-2">₹{transactionSummary.totalExpense}</div>
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Most Used</div>
@@ -171,14 +174,14 @@ function CategoryPage() {
             <span>
               Category Management
             </span>
-            
-              <input type="text" name="" id="" className='rounded-3xl border-2 border-white/10 px-2 md:px-5  md:text-base text-xs font-normal h-8 md:h-10' placeholder='Search' onChange={(e)=>setSearchCategory(e.target.value)}/>
-              
+
+            <input type="text" name="" id="" className='rounded-3xl border-2 border-white/10 px-2 md:px-5  md:text-base text-xs font-normal h-8 md:h-10' placeholder='Search' onChange={(e) => setSearchCategory((e.target.value).toLowerCase())} />
+
           </div>
           <div className='flex flex-col items-center w-full gap-3'>
             {
               categories.length > 0 ? (
-                categories.filter(category=>
+                categories.filter(category =>
                   category.name.toLowerCase().includes(searchCategory)
                 ).map((category, idx) => (
                   <div key={category.id} className='w-full flex md:px-7 flex-row px-4 rounded-xl py-3 sm:px-6 2xl:py-3 bg-gray-900   items-center shadow-lg '>

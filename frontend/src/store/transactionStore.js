@@ -7,5 +7,11 @@ export const useTransactionStore = create((set)=>({
   fetchTransactions: async () => {
     const res = await api.get("/transactions");
     set({ transactions: res.data });
+  },
+  transactionSummary: {totalIncome:0 , totalExpense:0, netAmount:0},
+  setTransactionSummary: (transactionSummary)=>set({transactionSummary}),
+  fetchTransactionSummary: async ()=>{
+    const res = await api.get("/transactions/summary");
+    set({transactionSummary:res.data})
   }
 }))

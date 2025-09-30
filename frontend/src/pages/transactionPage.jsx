@@ -3,15 +3,6 @@ import { Tabs } from "@/components/ui/tabs";
 import { useCategoryStore } from "../store/categoryStore";
 import api from "../lib/api";
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -32,7 +23,8 @@ import AllTransactions from "../components/AllTransactions";
 function TransactionPage() {
 
 
-
+  const fetchTransactionSummary = useTransactionStore((state)=>state.fetchTransactionSummary)
+  const transactionSummary = useTransactionStore((state)=>state.transactionSummary)
   const [dialogOpen1, setDialogOpen1] = useState(false);
   const transactions = useTransactionStore((state) => state.transactions)
   const categories = useCategoryStore((state) => state.categories)
@@ -44,13 +36,6 @@ function TransactionPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
-
-  const {
-    register: register2,
-    handleSubmit: handleSubmit2,
-    reset: reset2,
-    formState: { errors: errors2 },
   } = useForm()
 
 
@@ -65,6 +50,8 @@ function TransactionPage() {
         amount: data.amount
       })
       await fetchTransactions()
+      await fetchTransactionSummary()
+      
       reset()
       setDialogOpen1(false);
     }
@@ -92,7 +79,7 @@ function TransactionPage() {
   ];
 
   return (
-    <div className="min-h-screen md:p-10 p-3 bg-gradient-to-br from-black via-gray-900 to-black ">
+    <div className="min-h-screen overflow-auto md:p-10 p-3 bg-gradient-to-br from-black via-gray-900 to-black ">
       <h1 className="2xl:text-5xl md:mb-8 xl:text-4xl text-3xl mb-5 font-semibold text-white">
         Transaction
       </h1>
@@ -100,15 +87,15 @@ function TransactionPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Income</div>
-          <div className="md:text-2xl font-bold text-xs md:mt-2">₹0</div>
+          <div className="md:text-2xl font-bold text-xs md:mt-2">₹{transactionSummary.totalIncome.toLocaleString()}</div>
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Expenses</div>
-          <div className="md:text-2xl text-xs font-bold md:mt-2">₹0</div>
+          <div className="md:text-2xl text-xs font-bold md:mt-2">₹{transactionSummary.totalExpense.toLocaleString()}</div>
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Net Amount</div>
-          <div className="md:text-2xl text-xs font-bold md:mt-2">₹0</div>
+          <div className="md:text-2xl text-xs font-bold md:mt-2">₹{transactionSummary.netAmount}</div>
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Transactions</div>
@@ -267,7 +254,7 @@ function TransactionPage() {
 
 const DummyContent2 = () => {
   return (
-    <div className="w-full min-h-100  border-2 border-white/10">
+    <div className="w-full border-2 border-white/10">
 
     </div>
   );

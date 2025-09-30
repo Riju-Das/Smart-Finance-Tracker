@@ -130,9 +130,40 @@ async function deleteTransactionById(req, res) {
   }
 }
 
+async function getTransactionSummary(req, res) {
+  try {
+    const user = req.user
+    const transactions = await db.getTransactionByUserId(user.id);
+    let totalIncome = 0
+    let totalExpense = 0
+
+    transactions.forEach(transaction=>{
+      if(transaction.type==='INCOME'){
+        totalIncome += transaction.amount
+      }
+      else if(transaction.type==='EXPENSE'){
+        totalExpense += transaction.amount
+      }
+    })
+
+    const netAmount = totalIncome - totalExpense;
+
+    return res.status(200).json({
+      totalIncome,
+      totalExpense,
+      netAmount
+    })
+
+  }
+  catch(err){
+    return res.status(500).json({ message: "Couldn't get Transaction Summary" })
+  }
+}
+
 module.exports = {
   getTransactionByUserId,
   createTransaction,
   updateTransactionById,
   deleteTransactionById,
+  getTransactionSummary
 }

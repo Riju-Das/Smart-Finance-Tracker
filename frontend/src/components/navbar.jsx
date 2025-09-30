@@ -68,6 +68,7 @@ function Navbar() {
     },
   ];
   const [open, setOpen] = useState(false);
+  
   return (
     <Sidebar open={open} setOpen={setOpen} className="h-screen">
       <SidebarBody className="justify-between gap-10">

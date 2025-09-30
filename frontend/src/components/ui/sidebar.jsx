@@ -68,6 +68,7 @@ export const DesktopSidebar = ({
           "h-screen px-4 py-4 hidden  md:flex md:flex-col bg-black shadow-lg border-1 border-r-white/10 w-[300px] shrink-0",
           className
         )}
+        initial={{ width: "60px" }}
         animate={{
           width: animate ? (open ? "300px" : "60px") : "300px",
         }}
