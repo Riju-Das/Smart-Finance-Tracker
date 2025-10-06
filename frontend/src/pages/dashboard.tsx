@@ -7,7 +7,7 @@ function Dashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-900 to-black p-6">
       <h1 className="2xl:text-5xl md:mb-10 xl:text-4xl text-xl mb-5 font-semibold text-white">
-        Welcome, {user.fullname}
+        Welcome, {user?.fullname}
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 ">
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl p-6  text-white shadow">

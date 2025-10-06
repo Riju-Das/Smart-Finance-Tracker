@@ -6,7 +6,18 @@ import { loadSlim } from "@tsparticles/slim";
 import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "motion/react";
 
-export const SparklesCore = (props) => {
+interface SparklesCoreProps {
+  id?: string;
+  className?: string;
+  background?: string;
+  minSize?: number;
+  maxSize?: number;
+  speed?: number;
+  particleColor?: string;
+  particleDensity?: number;
+}
+
+export const SparklesCore: React.FC<SparklesCoreProps> = (props) => {
   const {
     id,
     className,
@@ -17,7 +28,7 @@ export const SparklesCore = (props) => {
     particleColor,
     particleDensity,
   } = props;
-  const [init, setInit] = useState(false);
+  const [init, setInit] = useState<boolean>(false);
   useEffect(() => {
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
@@ -27,7 +38,7 @@ export const SparklesCore = (props) => {
   }, []);
   const controls = useAnimation();
 
-  const particlesLoaded = async (container) => {
+  const particlesLoaded = async (container: unknown) => {
     if (container) {
       controls.start({
         opacity: 1,
@@ -68,7 +79,7 @@ export const SparklesCore = (props) => {
                   enable: false,
                   mode: "repulse",
                 },
-                resize: true,
+                resize: { enable: true },
               },
               modes: {
                 push: {
@@ -145,7 +156,7 @@ export const SparklesCore = (props) => {
                 close: true,
                 fill: true,
                 options: {},
-                type: {},
+                type: "",
               },
               groups: {},
               move: {

@@ -4,31 +4,42 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom";
 import api from "../lib/api";
+import axios from "axios";
 
 function RegisterPage() {
 
   const navigate = useNavigate()
+
+  interface RegisterPageFormtype{
+    username:string;
+    fullname:string;
+    email:string;
+    password:string
+    confirmPassword?:string
+  }
+
 
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm()
+  } = useForm<RegisterPageFormtype>()
 
-  async function onSubmit(data) {
-    try{
+  async function onSubmit(data:RegisterPageFormtype) {
+    try {
       const res = await api.post("/register", data)
       navigate("/login")
     }
-    catch(err){
-      console.error(err);
-      alert(err.response?.data?.message || "Registration failed" )
+    catch (err) {
+      if(axios.isAxiosError(err)){
+        alert(err.response?.data?.message || "Registration failed")
+      }
     }
   }
 
   return (
-  <div className="  min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black px-2 overflow-y-auto">
+    <div className="  min-h-screen w-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black px-2 overflow-y-auto">
       <div className="shadow-input mx-auto w-full max-w-md rounded-none bg-white p-4 md:rounded-2xl md:p-10 dark:bg-black">
         <h1 className="text-2xl font-bold text-center my-5 text-neutral-800 dark:text-neutral-200">
           Welcome to Budget Buddy
@@ -174,6 +185,9 @@ const BottomGradient = () => {
 const LabelInputContainer = ({
   children,
   className,
+}: {
+  children: React.ReactNode;
+  className?: string;
 }) => {
   return (
     <div className={cn("flex w-full flex-col space-y-2", className)}>

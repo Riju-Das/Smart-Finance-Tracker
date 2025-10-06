@@ -48,7 +48,7 @@ function Navbar() {
     },
     {
       label: "Budget",
-      href: "#",
+      to: "#",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
       ),
@@ -70,7 +70,7 @@ function Navbar() {
   const [open, setOpen] = useState(false);
   
   return (
-    <Sidebar open={open} setOpen={setOpen} className="h-screen">
+    <Sidebar open={open} setOpen={setOpen}>
       <SidebarBody className="justify-between gap-10">
         <div className="flex flex-1  flex-col overflow-x-hidden overflow-y-auto">
           {open ? <Logo /> : <LogoIcon />}
@@ -83,10 +83,8 @@ function Navbar() {
         <div>
           <SidebarLink
             link={{
-              label: (
-                <span className="text-xl font-semibold">{user.fullname}</span>
-              ),
-              href: "#",
+              label: user?.fullname ?? "",
+              to: "#",
               icon: (
                 <img
 

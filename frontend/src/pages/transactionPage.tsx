@@ -18,28 +18,35 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form"
 import { useState } from "react";
 import AllTransactions from "../components/AllTransactions";
-
+import axios from "axios";
 
 function TransactionPage() {
 
 
-  const fetchTransactionSummary = useTransactionStore((state)=>state.fetchTransactionSummary)
-  const transactionSummary = useTransactionStore((state)=>state.transactionSummary)
+  const fetchTransactionSummary = useTransactionStore((state) => state.fetchTransactionSummary)
+  const transactionSummary = useTransactionStore((state) => state.transactionSummary)
   const [dialogOpen1, setDialogOpen1] = useState(false);
   const transactions = useTransactionStore((state) => state.transactions)
   const categories = useCategoryStore((state) => state.categories)
   const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)
 
+  interface TransactionFormType {
+    amount: number;
+    type: "INCOME" | "EXPENSE";
+    description: string;
+    date: string;
+    category: string
+  }
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm<TransactionFormType>()
 
 
-  async function onSubmit(data) {
+  async function onSubmit(data:TransactionFormType) {
 
     try {
       await api.post("/transactions", {
@@ -51,13 +58,14 @@ function TransactionPage() {
       })
       await fetchTransactions()
       await fetchTransactionSummary()
-      
+
       reset()
       setDialogOpen1(false);
     }
     catch (err) {
-      console.log(err);
-      alert(err?.response?.message || "Failed creating a new Transaction")
+      if(axios.isAxiosError(err)){
+        alert(err?.response?.data?.message || "Failed creating a new Transaction")
+      }
     }
   }
 
@@ -272,6 +280,9 @@ const BottomGradient = () => {
 const LabelInputContainer = ({
   children,
   className,
+}: {
+  children: React.ReactNode;
+  className?: string;
 }) => {
   return (
     <div className={cn("flex w-full flex-col space-y-2", className)}>

@@ -5,14 +5,19 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuthStore } from "../store/authStore";
-
+import axios from "axios";
 
 function LoginPage() {
   const navigate = useNavigate()
 
-  const setUser = useAuthStore((state)=>state.setUser)
-  const setAccessToken = useAuthStore((state)=>state.setAccessToken)
-  const user = useAuthStore((state)=>state.user)
+  const setUser = useAuthStore((state) => state.setUser)
+  const setAccessToken = useAuthStore((state) => state.setAccessToken)
+  const user = useAuthStore((state) => state.user)
+
+  interface LoginFormType {
+    username: string,
+    password: number
+  }
 
   const {
     register,
@@ -20,9 +25,9 @@ function LoginPage() {
     setError,
     watch,
     formState: { errors },
-  } = useForm()
+  } = useForm<LoginFormType>()
 
-  async function onSubmit(data) {
+  async function onSubmit(data: LoginFormType) {
     try {
       const res = await api.post("/login", data);
       setAccessToken(res.data.accessToken);
@@ -33,15 +38,17 @@ function LoginPage() {
     }
     catch (err) {
       console.error(err);
-      const msg = err.response?.data?.message || "Login failed";
-      if(msg.toLowerCase().includes("password")){
-        setError("password", {type: "manual", message:msg})
-      }
-      else if(msg.toLowerCase().includes("username")){
-        setError("username", {type: "manual", message:msg})
-      }
-      else{
-        alert(msg)
+      if (axios.isAxiosError(err)) {
+        const msg = err?.response?.data?.message || "Login failed";
+        if (msg.toLowerCase().includes("password")) {
+          setError("password", { type: "manual", message: msg })
+        }
+        else if (msg.toLowerCase().includes("username")) {
+          setError("username", { type: "manual", message: msg })
+        }
+        else {
+          alert(msg)
+        }
       }
     }
   }
@@ -132,9 +139,13 @@ const BottomGradient = () => {
     </>
   );
 };
+
 const LabelInputContainer = ({
   children,
   className,
+}: {
+  children: React.ReactNode;
+  className?: string;
 }) => {
   return (
     <div className={cn("flex w-full flex-col space-y-2", className)}>

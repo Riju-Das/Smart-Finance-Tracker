@@ -1,6 +1,7 @@
 import { useTransactionStore } from "../store/transactionStore"
 import { useCategoryStore } from "../store/categoryStore";
 import api from "../lib/api";
+import axios from "axios";
 import {
   Table,
   TableBody,
@@ -28,26 +29,30 @@ import { useState } from "react";
 
 
 const AllTransactions = () => {
-
+  interface TransactionFormData{
+    description:string;
+    type: "INCOME" | "EXPENSE";
+    category: string;
+    date: string;
+    amount: number
+  }
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm<TransactionFormData>()
+
   const fetchTransactionSummary = useTransactionStore((state) => state.fetchTransactionSummary)
-  const [editDialogIndex, setEditDialogIndex] = useState(null);
   const transactions = useTransactionStore((state) => state.transactions)
   const categories = useCategoryStore((state) => state.categories)
   const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)
-  const [categorySort, setCategorySort] = useState("")
-  const [typeSort, setTypeSort] = useState("")
-  const [searchDesc, setSearchDesc] = useState("")
+  const [categorySort, setCategorySort] = useState<string>("")
+  const [typeSort, setTypeSort] = useState<string>("")
+  const [searchDesc, setSearchDesc] = useState<string>("")
+  const [editDialogIndex, setEditDialogIndex] = useState<number  | null>(null);
 
-  async function onSubmit(data, id) {
-
-
-
+  async function onSubmit(data:TransactionFormData , id:string) {
     try {
       await api.put(`/transactions/${id}`, {
         description: data.description,
@@ -62,19 +67,28 @@ const AllTransactions = () => {
       setEditDialogIndex(null)
     }
     catch (err) {
-      console.log(err);
-      alert(err?.response?.message || "Failed updating Transaction")
+      if(axios.isAxiosError(err)){
+        alert(err.response?.data?.message || "Failed updating Transaction");
+      }
+      else{
+        alert("Failed updating Transaction");
+      }
     }
   }
 
-  async function handleDeleteTransaction(id) {
+  async function handleDeleteTransaction(id:string) {
     try {
       await api.delete(`/transactions/${id}`)
       await fetchTransactions()
       await fetchTransactionSummary()
     }
     catch (err) {
-      alert(err?.response?.message || "Failed deleting Transaction")
+      if(axios.isAxiosError(err)){
+        alert(err?.response?.data?.message || "Failed deleting Transaction")
+      }
+      else{
+        alert("Failed deleting Transaction")
+      }
     }
   }
 
@@ -316,9 +330,13 @@ const BottomGradient = () => {
     </>
   );
 };
+
 const LabelInputContainer = ({
   children,
   className,
+}: {
+  children: React.ReactNode;
+  className?: string;
 }) => {
   return (
     <div className={cn("flex w-full flex-col space-y-2", className)}>

@@ -17,31 +17,37 @@ import { useForm } from "react-hook-form"
 import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import axios from 'axios';
 
 function CategoryPage() {
+
+  interface CategoryFormType{
+    category:string
+  }
+
   const navigate = useNavigate()
   const categories = useCategoryStore((state) => state.categories)
-  const [dialogOpen1, setDialogOpen1] = useState(false);
+  const [dialogOpen1, setDialogOpen1] = useState<boolean>(false);
   const fetchCategories = useCategoryStore((state) => state.fetchCategories);
-  const [editDialogIndex, setEditDialogIndex] = useState(null);
-  const [searchCategory, setSearchCategory] = useState("")
-  const transactionSummary = useTransactionStore((state)=>state.transactionSummary)
+  const [editDialogIndex, setEditDialogIndex] = useState<number | null>(null);
+  const [searchCategory, setSearchCategory] = useState<string>("")
+  const transactionSummary = useTransactionStore((state) => state.transactionSummary)
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm<CategoryFormType>()
 
   const {
     register: register2,
     handleSubmit: handleSubmit2,
     reset: reset2,
     formState: { errors: errors2 },
-  } = useForm()
+  } = useForm<CategoryFormType>()
 
-  async function onSubmit(data) {
+  async function onSubmit(data:CategoryFormType) {
 
     try {
       await api.post("/categories", {
@@ -52,12 +58,16 @@ function CategoryPage() {
       setDialogOpen1(false);
     }
     catch (err) {
-      console.log(err);
-      alert(err?.response?.message || "Failed creating a new category")
+      if(axios.isAxiosError(err)){
+        alert(err?.response?.data?.message || "Failed creating a new category")
+      }
+      else{
+        alert("Failed creating a new category")
+      }
     }
   }
 
-  async function handleUpdateCategory(id, data) {
+  async function handleUpdateCategory(id:string , data:CategoryFormType) {
     try {
       await api.put(`/categories/${id}`, {
         name: data.category
@@ -67,19 +77,27 @@ function CategoryPage() {
       setEditDialogIndex(null)
     }
     catch (err) {
-      console.log(err);
-      alert(err?.response?.message || "Failed updating category")
+      if(axios.isAxiosError(err)){
+        alert(err?.response?.data?.message || "Failed updating category")
+      }
+      else{
+        alert("Failed updating category")
+      }
     }
   }
-
-  async function handleDeleteCategory(id) {
+  async function handleDeleteCategory(id:string) {
     try {
       await api.delete(`/categories/${id}`)
       await fetchCategories()
     }
     catch (err) {
       console.log(err);
-      alert(err?.response?.message || "Failed deleting category")
+      if(axios.isAxiosError(err)){
+        alert(err?.response?.data?.message || "Failed deleting category")
+      }
+      else{
+        alert("Failed deleting category")
+      }
     }
   }
 
@@ -295,9 +313,13 @@ const BottomGradient = () => {
     </>
   );
 };
+
 const LabelInputContainer = ({
   children,
   className,
+}: {
+  children: React.ReactNode;
+  className?: string;
 }) => {
   return (
     <div className={cn("flex w-full flex-col space-y-2", className)}>

@@ -7,7 +7,7 @@ import api from './lib/api'
 import { LoaderOne } from "@/components/ui/loader";
 import { useCategoryStore } from './store/categoryStore'
 import { useTransactionStore } from './store/transactionStore'
-
+import axios from 'axios'
 
 function App() {
   const navigate = useNavigate();
@@ -18,11 +18,11 @@ function App() {
   const logout = useAuthStore((state) => state.logout)
   const [loaded, setLoaded] = useState(false)
   const [categoryLoaded, setCategoryLoaded] = useState(false)
-  const [transactionLoaded , setTransactionLoaded] = useState(false)
+  const [transactionLoaded, setTransactionLoaded] = useState(false)
   const setCategories = useCategoryStore((state) => state.setCategories)
-  const setTransactions = useTransactionStore((state)=>state.setTransactions)
+  const setTransactions = useTransactionStore((state) => state.setTransactions)
 
-  const fetchTransactionSummary = useTransactionStore((state)=>state.fetchTransactionSummary)
+  const fetchTransactionSummary = useTransactionStore((state) => state.fetchTransactionSummary)
 
   async function fetchSession() {
     try {
@@ -52,29 +52,34 @@ function App() {
       setCategoryLoaded(true)
     }
     catch (err) {
-      alert(err?.response?.data?.message || "Failed to fetch categories")
+      if (axios.isAxiosError(err)) {
+        alert(err?.response?.data?.message || "Failed to fetch categories")
+      }
     }
   }
 
-  async function fetchTransactions(){
-    try{
-      const res= await api.get("/transactions");
+  async function fetchTransactions() {
+    try {
+      const res = await api.get("/transactions");
       setTransactions(res.data);
       setTransactionLoaded(true)
 
       await fetchTransactionSummary()
 
     }
-    catch(err){
-      alert(err?.response?.data?.message || "Failed to fetch transactions")
+    catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert(err?.response?.data?.message || "Failed to fetch transactions")
+      }
+
     }
   }
-  
-  useEffect(()=>{
-    if(loaded){
+
+  useEffect(() => {
+    if (loaded) {
       fetchTransactions()
     }
-  } , [loaded])
+  }, [loaded])
 
   useEffect(() => {
     if (loaded) {
