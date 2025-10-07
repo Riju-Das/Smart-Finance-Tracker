@@ -1,6 +1,13 @@
-const db = require("../db/TransactionQueries")
+import * as db from "../db/TransactionQueries"
+import type { Request, Response } from "express";
+import * as jwt from "jsonwebtoken";
+import type { Transaction } from "@prisma/client";
 
-async function getTransactionByUserId(req, res) {
+interface AuthenticatedRequest extends Request {
+  user?: jwt.JwtPayload | undefined;
+}
+
+async function getTransactionByUserId(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" })
@@ -12,7 +19,7 @@ async function getTransactionByUserId(req, res) {
   }
 }
 
-async function createTransaction(req, res) {
+async function createTransaction(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -55,7 +62,7 @@ async function createTransaction(req, res) {
   }
 }
 
-async function updateTransactionById(req, res) {
+async function updateTransactionById(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -93,7 +100,7 @@ async function updateTransactionById(req, res) {
     const transaction = await db.updateTransactionById(id, user.id, categoryId, type, Number(amount), description, date)
     return res.status(200).json(transaction)
   }
-  catch (err) {
+  catch (err:any) {
     if (err.code === "P2025") {
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -102,7 +109,7 @@ async function updateTransactionById(req, res) {
   }
 }
 
-async function deleteTransactionById(req, res) {
+async function deleteTransactionById(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -121,7 +128,7 @@ async function deleteTransactionById(req, res) {
     const transaction = await db.deleteTransactionById(id);
     return res.status(200).json(transaction)
   }
-  catch (err) {
+  catch (err:any) {
     if (err.code === "P2025") {
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -130,18 +137,19 @@ async function deleteTransactionById(req, res) {
   }
 }
 
-async function getTransactionSummary(req, res) {
+async function getTransactionSummary(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user
+    if(!user)  return res.status(401).json({ message: "Unauthorized" });
     const transactions = await db.getTransactionByUserId(user.id);
     let totalIncome = 0
     let totalExpense = 0
 
-    transactions.forEach(transaction=>{
-      if(transaction.type==='INCOME'){
+    transactions.forEach((transaction:Transaction )=> {
+      if (transaction.type === 'INCOME') {
         totalIncome += transaction.amount
       }
-      else if(transaction.type==='EXPENSE'){
+      else if (transaction.type === 'EXPENSE') {
         totalExpense += transaction.amount
       }
     })
@@ -155,12 +163,12 @@ async function getTransactionSummary(req, res) {
     })
 
   }
-  catch(err){
+  catch (err) {
     return res.status(500).json({ message: "Couldn't get Transaction Summary" })
   }
 }
 
-module.exports = {
+export{
   getTransactionByUserId,
   createTransaction,
   updateTransactionById,

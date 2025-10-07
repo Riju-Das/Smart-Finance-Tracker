@@ -1,6 +1,13 @@
-const db = require("../db/Categoryqueries")
+import * as db from "../db/Categoryqueries"
+import type { Request, Response } from "express";
+import * as jwt from "jsonwebtoken";
 
-async function getCategoriesByUserId(req, res) {
+interface AuthenticatedRequest extends Request{
+  user?:  jwt.JwtPayload | undefined;
+}
+
+
+async function getCategoriesByUserId(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" })
@@ -12,7 +19,7 @@ async function getCategoriesByUserId(req, res) {
   }
 }
 
-async function createCategory(req, res) {
+async function createCategory(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -30,7 +37,7 @@ async function createCategory(req, res) {
   }
 }
 
-async function updateCategoryById(req, res) {
+async function updateCategoryById(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -55,7 +62,7 @@ async function updateCategoryById(req, res) {
     const category = await db.updateCategoryById(id, name.trim())
     return res.status(200).json(category)
   }
-  catch (err) {
+  catch (err:any) {
     if (err.code === "P2025") {
       return res.status(404).json({ message: "Category not found" });
     }
@@ -64,7 +71,7 @@ async function updateCategoryById(req, res) {
   }
 }
 
-async function deleteCategoryById(req, res) {
+async function deleteCategoryById(req:AuthenticatedRequest, res:Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -83,7 +90,7 @@ async function deleteCategoryById(req, res) {
     const category = await db.deleteCategoryById(id);
     return res.status(200).json(category)
   }
-  catch (err) {
+  catch (err:any) {
     if (err.code === "P2025") {
       return res.status(404).json({ message: "Category not found" });
     }
@@ -92,7 +99,7 @@ async function deleteCategoryById(req, res) {
   }
 }
 
-module.exports = {
+export{
   getCategoriesByUserId,
   createCategory,
   updateCategoryById,

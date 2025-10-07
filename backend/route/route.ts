@@ -1,8 +1,10 @@
-const express = require("express")
-const authenticateToken = require("../config/authenticate")
-const AuthController = require("../controller/AuthController")
-const CategoryController = require("../controller/CategoryController")
-const TransactionController = require("../controller/TransactionController")
+import * as express from "express"
+import authenticateToken from "../config/authenticate"
+import * as AuthController from "../controller/AuthController"
+import * as CategoryController from "../controller/CategoryController"
+import * as TransactionController from "../controller/TransactionController"
+
+
 const route = express.Router()
 
 route.post("/register", AuthController.register);
@@ -23,4 +25,4 @@ route.delete("/transactions/:id", authenticateToken, TransactionController.delet
 
 route.get("/transactions/summary" , authenticateToken , TransactionController.getTransactionSummary)
 
-module.exports= route
+export default route

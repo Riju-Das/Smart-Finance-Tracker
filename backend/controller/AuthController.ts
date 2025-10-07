@@ -1,25 +1,41 @@
-const db = require("../db/AuthQueries")
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
-require("dotenv").config()
+import * as db from "../db/AuthQueries"
+import * as bcrypt from "bcryptjs";
+import * as jwt from "jsonwebtoken"
+import { config  } from "dotenv";
+import type { Request, Response } from "express";
 
-function generateAccessToken(user) {
+config()
+
+interface User{
+  id: string;
+  username: string;
+  fullname: string;
+  email: string;
+  password?: string;
+  refreshTokens?: string[]
+}
+
+interface AuthenticatedRequest extends Request {
+  user?:  jwt.JwtPayload | undefined;
+}
+
+function generateAccessToken(user:User) {
   return jwt.sign(
     { id: user.id, username: user.username, fullname: user.fullname, email: user.email },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ACCESS_TOKEN_SECRET as string,
     { expiresIn: "300m" }
   );
 }
 
-function generateRefreshToken(user) {
+function generateRefreshToken(user:User) {
   return jwt.sign(
     { id: user.id, username: user.username, fullname: user.fullname, email: user.email },
-    process.env.REFRESH_TOKEN_SECRET,
+    process.env.REFRESH_TOKEN_SECRET as string ,
     { expiresIn: "7d" }
   );
 }
 
-async function register(req, res) {
+async function register(req:Request, res:Response) {
   try {
     const { username, fullname, email, password } = req.body;
     const existing = await db.findUserByUsername(username);
@@ -33,7 +49,7 @@ async function register(req, res) {
   }
 }
 
-async function login(req, res) {
+async function login(req:Request, res:Response) {
   try {
     const { username, password } = req.body;
     const user = await db.findUserByUsername(username);
@@ -59,16 +75,17 @@ async function login(req, res) {
   }
 }
 
-async function refresh(req, res) {
+async function refresh(req:Request , res:Response) {
   try {
     const token = req.cookies.refreshToken;
     if (!token) return res.status(403).json({ message: "No refresh token" });
-
-    const userData = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-      if (err) return null;
-      return decoded;
-    })
-    if (!userData) return res.status(403).json({ message: "invalid refresh token" });
+    let userData:any;
+    try{
+      userData = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string)
+    }
+    catch(err){
+      return res.status(403).json({ message: "invalid refresh token" });
+    }
     const user = await db.findUserByUsername(userData.username);
     if (!user || !user.refreshTokens.includes(token)) {
       return res.status(403).json({ message: "Refresh token revoked" });
@@ -84,7 +101,7 @@ async function refresh(req, res) {
 
 }
 
-async function logout(req, res) {
+async function logout(req:Request, res:Response) {
   try {
     const token = req.cookies.refreshToken;
     res.clearCookie("refreshToken");
@@ -102,7 +119,7 @@ async function logout(req, res) {
   }
 }
 
-async function userDetail(req,res) {
+async function userDetail(req:AuthenticatedRequest,res:Response) {
   const user = req.user;
   if(!user){
     return res.status(401).json({message:"Auth error"})
@@ -111,10 +128,4 @@ async function userDetail(req,res) {
   return res.status(200).json({id , username , fullname , email})
 }
 
-module.exports = {
-  register,
-  login,
-  refresh,
-  logout,
-  userDetail
-}
+export { register, login, refresh, logout, userDetail };

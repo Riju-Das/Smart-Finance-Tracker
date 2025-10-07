@@ -1,8 +1,8 @@
-const { PrismaClient } = require('../generated/prisma')
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
-async function getCategoryByUserId(id){
+async function getCategoryByUserId(id:string){
   return await prisma.category.findMany({
     where:{
       userId:id
@@ -13,7 +13,7 @@ async function getCategoryByUserId(id){
   })
 }
 
-async function getUserIdByCategoryById(id){
+async function getUserIdByCategoryById(id:string){
   return await prisma.category.findUnique({
     where:{
       id:id
@@ -24,7 +24,7 @@ async function getUserIdByCategoryById(id){
   })
 }
 
-async function createCategory(id,name){
+async function createCategory(id:string,name:string){
   return await prisma.category.create({
     data:{
       name:name,
@@ -33,7 +33,7 @@ async function createCategory(id,name){
   })
 }
 
-async function updateCategoryById(id,name){
+async function updateCategoryById(id:string ,name:string){
   return await prisma.category.update({
     where:{
       id:id
@@ -44,7 +44,7 @@ async function updateCategoryById(id,name){
   })
 }
 
-async function deleteCategoryById(id){
+async function deleteCategoryById(id:string){
   return await prisma.category.delete({
     where:{
       id:id
@@ -52,7 +52,7 @@ async function deleteCategoryById(id){
   })
 }
 
-module.exports = {
+export {
   getCategoryByUserId,
   createCategory,
   updateCategoryById,
