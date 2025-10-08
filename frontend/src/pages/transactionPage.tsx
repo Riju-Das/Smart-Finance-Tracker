@@ -1,6 +1,7 @@
 import { useTransactionStore } from "../store/transactionStore"
 import { Tabs } from "@/components/ui/tabs";
 import { useCategoryStore } from "../store/categoryStore";
+import TransactionAnalytics from "@/components/TransactionAnalytics";
 import api from "../lib/api";
 import {
   Dialog,
@@ -81,7 +82,7 @@ function TransactionPage() {
       title: "Analytics",
       value: "Analytics",
       content: (
-        <DummyContent2 />
+        <TransactionAnalytics />
       ),
     },
   ];
@@ -260,13 +261,6 @@ function TransactionPage() {
   )
 }
 
-const DummyContent2 = () => {
-  return (
-    <div className="w-full border-2 border-white/10">
-
-    </div>
-  );
-};
 
 
 const BottomGradient = () => {

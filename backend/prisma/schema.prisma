@@ -31,7 +31,7 @@ model Transaction {
   amount      Float
   type        TransactionType
   description String
-  date        DateTime        
+  date        DateTime
   userId      String
   user        User            @relation(fields: [userId], references: [id])
 
@@ -44,6 +44,7 @@ model Category {
   name         String
   transactions Transaction[]
   date         DateTime      @default(now())
+  color        String        
   userId       String
   user         User          @relation(fields: [userId], references: [id])
 }

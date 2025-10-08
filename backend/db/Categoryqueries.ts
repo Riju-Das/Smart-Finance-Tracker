@@ -24,22 +24,24 @@ async function getUserIdByCategoryById(id:string){
   })
 }
 
-async function createCategory(id:string,name:string){
+async function createCategory(id:string,name:string, color:string){
   return await prisma.category.create({
     data:{
       name:name,
-      userId:id
+      userId:id,
+      color: color
     }
   })
 }
 
-async function updateCategoryById(id:string ,name:string){
+async function updateCategoryById(id:string ,name:string, color:string){
   return await prisma.category.update({
     where:{
       id:id
     },
     data:{
-      name:name
+      name:name,
+      color:color
     }
   })
 }

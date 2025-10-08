@@ -24,12 +24,16 @@ async function createCategory(req:AuthenticatedRequest, res:Response) {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
 
-    const { name } = req.body;
+    const { name , color } = req.body;
 
     if (!name || typeof name !== "string" || !name.trim()) {
       return res.status(400).json({ message: "Category name is required" });
     }
-    const category = await db.createCategory(user.id, name.trim())
+    
+    if (!color || typeof color !== "string" || !color.trim()) {
+      return res.status(400).json({ message: "Category color is required" });
+    }
+    const category = await db.createCategory(user.id, name.trim(), color.trim())
     return res.status(201).json(category)
   }
   catch (err) {
@@ -47,10 +51,13 @@ async function updateCategoryById(req:AuthenticatedRequest, res:Response) {
       return res.status(400).json({ message: "Category id required" })
     }
 
-    const { name } = req.body;
+    const { name,color } = req.body;
 
     if (!name || typeof name !== "string" || !name.trim()) {
       return res.status(400).json({ message: "Category name is required for update" })
+    }
+    if (!color || typeof color !== "string" || !color.trim()) {
+      return res.status(400).json({ message: "Category color is required" });
     }
 
     const CategoryUserId = await db.getUserIdByCategoryById(id)
@@ -59,7 +66,7 @@ async function updateCategoryById(req:AuthenticatedRequest, res:Response) {
       return res.status(401).json({ message: "Unauthorized" })
     }
 
-    const category = await db.updateCategoryById(id, name.trim())
+    const category = await db.updateCategoryById(id, name.trim(),color.trim())
     return res.status(200).json(category)
   }
   catch (err:any) {

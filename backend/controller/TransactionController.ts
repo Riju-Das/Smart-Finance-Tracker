@@ -179,6 +179,7 @@ async function getExpenseByCategory(req: AuthenticatedRequest, res: Response) {
     const result = data.map((group)=>{
       const category = categories.find(cat=> cat.id === group.categoryId);
       return {
+        color: category? category.color: "#1111",
         categoryId: group.categoryId,
         name: category? category.name: "Unknown",
         amount: group._sum.amount
@@ -207,6 +208,7 @@ async function getMonthlyTransaction(req:AuthenticatedRequest , res:Response){
         type: group.type,
         categoryId: group.categoryId,
         name: category? category.name : "Unknown",
+        color: category? category.color: "#1111",
         date: group.date,
         amount: group._sum.amount
       }

@@ -21,9 +21,13 @@ import axios from 'axios';
 
 function CategoryPage() {
 
-  interface CategoryFormType{
-    category:string
+  interface CategoryFormType {
+    category: string;
+    color: string;
   }
+
+  const [createColor , setCreateColor ] = useState("#1111")
+  const [updateColor , setUpdateColor ] = useState("#1111")
 
   const navigate = useNavigate()
   const categories = useCategoryStore((state) => state.categories)
@@ -47,55 +51,57 @@ function CategoryPage() {
     formState: { errors: errors2 },
   } = useForm<CategoryFormType>()
 
-  async function onSubmit(data:CategoryFormType) {
+  async function onSubmit(data: CategoryFormType) {
 
     try {
       await api.post("/categories", {
-        name: data.category
+        name: data.category,
+        color: data.color
       })
       await fetchCategories()
       reset()
       setDialogOpen1(false);
     }
     catch (err) {
-      if(axios.isAxiosError(err)){
+      if (axios.isAxiosError(err)) {
         alert(err?.response?.data?.message || "Failed creating a new category")
       }
-      else{
+      else {
         alert("Failed creating a new category")
       }
     }
   }
 
-  async function handleUpdateCategory(id:string , data:CategoryFormType) {
+  async function handleUpdateCategory(id: string, data: CategoryFormType) {
     try {
       await api.put(`/categories/${id}`, {
-        name: data.category
+        name: data.category,
+        color: data.color
       })
       await fetchCategories()
       reset2()
       setEditDialogIndex(null)
     }
     catch (err) {
-      if(axios.isAxiosError(err)){
+      if (axios.isAxiosError(err)) {
         alert(err?.response?.data?.message || "Failed updating category")
       }
-      else{
+      else {
         alert("Failed updating category")
       }
     }
   }
-  async function handleDeleteCategory(id:string) {
+  async function handleDeleteCategory(id: string) {
     try {
       await api.delete(`/categories/${id}`)
       await fetchCategories()
     }
     catch (err) {
       console.log(err);
-      if(axios.isAxiosError(err)){
+      if (axios.isAxiosError(err)) {
         alert(err?.response?.data?.message || "Failed deleting category")
       }
-      else{
+      else {
         alert("Failed deleting category")
       }
     }
@@ -128,25 +134,22 @@ function CategoryPage() {
             </DialogHeader>
 
             <form className="my-5" onSubmit={handleSubmit(onSubmit)}>
-
               <LabelInputContainer className="mb-7">
                 <Input
                   required
                   id="category"
                   placeholder="Write Category Name"
                   type="text"
-                  {...register("category",
-                    {
-                      maxLength: { value: 20, message: "Max 20 characters" },
-                      minLength: { value: 3, message: "Min 3 characters" },
-                      pattern: {
-                        value: /^[A-Za-z]+$/,
-                        message: "Start with a letter, only letters and numbers"
-                      }
-                    })
-                  }
+                  {...register("category")}
                 />
-                {errors.category && <span className="text-red-500 text-xs">{errors.category.message}</span>}
+              </LabelInputContainer>
+              <LabelInputContainer className="mb-7">
+                <Input
+                  required
+                  id="color"
+                  type="color"
+                  {...register("color")}
+                />
               </LabelInputContainer>
 
               <button
@@ -202,10 +205,13 @@ function CategoryPage() {
                 categories.filter(category =>
                   category.name.toLowerCase().includes(searchCategory)
                 ).map((category, idx) => (
-                  <div key={category.id} className='w-full flex md:px-7 flex-row px-4 rounded-xl py-3 sm:px-6 2xl:py-3 bg-gray-900   items-center shadow-lg '>
+                  <div key={category.id} 
+                  className="w-full flex md:px-7 flex-row px-4 rounded-xl bg-gray-900 py-3 sm:px-6 2xl:py-3 items-center shadow-lg"
+                  
+                  >
 
                     <div className='w-1/2 flex items-center h-full text-white  text-xs 2xl:text-lg xl:text-md  '>
-                      <span className="inline-block mr-2 w-2 h-2 rounded-4xl bg-gray-700"></span>
+                      <span className="inline-block mr-2 w-2 h-2 rounded-4xl " style={{ backgroundColor: category.color }}></span>
                       {category.name}
                     </div>
                     <div className='w-1/2 flex justify-end gap-3 md:gap-10'>
@@ -239,6 +245,7 @@ function CategoryPage() {
                           <form className="my-5" onSubmit={handleSubmit2((data) => handleUpdateCategory(category.id, data))}>
 
                             <LabelInputContainer className="mb-7">
+                              <Label htmlFor="category" className="mb-1">Category Name:</Label>
                               <Input
                                 required
                                 id="category"
@@ -254,6 +261,19 @@ function CategoryPage() {
                                     }
                                   })
                                 }
+                              />
+                              {errors2.category && <span className="text-red-500 text-xs">{errors2.category.message}</span>}
+                            </LabelInputContainer>
+
+                            <LabelInputContainer className="mb-7">
+                              <Label htmlFor="color" className="mb-1">Category Color:</Label>
+                              <Input
+                                required
+                                id="color"
+                                value={updateColor}
+                                onChange={e=>setUpdateColor(e.target.value)}
+                                type="color"
+                                {...register2("color")}
                               />
                               {errors2.category && <span className="text-red-500 text-xs">{errors2.category.message}</span>}
                             </LabelInputContainer>
