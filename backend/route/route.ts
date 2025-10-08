@@ -25,4 +25,7 @@ route.delete("/transactions/:id", authenticateToken, TransactionController.delet
 
 route.get("/transactions/summary" , authenticateToken , TransactionController.getTransactionSummary)
 
+route.get("/transactions/expenseByCategory" , authenticateToken , TransactionController.getExpenseByCategory);
+route.get("/transactions/monthly", authenticateToken , TransactionController.getMonthlyTransaction)
+
 export default route

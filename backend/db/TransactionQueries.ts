@@ -1,4 +1,4 @@
-import { PrismaClient} from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import type { TransactionType } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -81,10 +81,36 @@ async function deleteTransactionById(id: string) {
   });
 }
 
-export{
+async function getExpenseByCategory(userId: string) {
+  return await prisma.transaction.groupBy({
+    by: ['categoryId'],
+    where: {
+      userId: userId,
+      type: 'EXPENSE'
+    },
+    _sum: {
+      amount: true
+    }
+  })
+}
+
+async function getMonthlyTransaction(userId: string) {
+  return await prisma.transaction.groupBy({
+    by: ['type', 'categoryId', 'date'],
+    where: {
+      userId: userId
+    },
+    _sum: { amount: true },
+    orderBy: { date: 'desc' }
+  })
+}
+
+export {
   getTransactionByUserId,
   getUserIdByTransactionId,
   createTransaction,
   updateTransactionById,
-  deleteTransactionById
+  deleteTransactionById,
+  getExpenseByCategory,
+  getMonthlyTransaction
 }

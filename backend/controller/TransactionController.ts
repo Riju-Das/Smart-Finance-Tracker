@@ -2,12 +2,13 @@ import * as db from "../db/TransactionQueries"
 import type { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import type { Transaction } from "@prisma/client";
+import * as dbCategory from '../db/Categoryqueries'
 
 interface AuthenticatedRequest extends Request {
   user?: jwt.JwtPayload | undefined;
 }
 
-async function getTransactionByUserId(req:AuthenticatedRequest, res:Response) {
+async function getTransactionByUserId(req: AuthenticatedRequest, res: Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" })
@@ -19,7 +20,7 @@ async function getTransactionByUserId(req:AuthenticatedRequest, res:Response) {
   }
 }
 
-async function createTransaction(req:AuthenticatedRequest, res:Response) {
+async function createTransaction(req: AuthenticatedRequest, res: Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -62,7 +63,7 @@ async function createTransaction(req:AuthenticatedRequest, res:Response) {
   }
 }
 
-async function updateTransactionById(req:AuthenticatedRequest, res:Response) {
+async function updateTransactionById(req: AuthenticatedRequest, res: Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -100,7 +101,7 @@ async function updateTransactionById(req:AuthenticatedRequest, res:Response) {
     const transaction = await db.updateTransactionById(id, user.id, categoryId, type, Number(amount), description, date)
     return res.status(200).json(transaction)
   }
-  catch (err:any) {
+  catch (err: any) {
     if (err.code === "P2025") {
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -109,7 +110,7 @@ async function updateTransactionById(req:AuthenticatedRequest, res:Response) {
   }
 }
 
-async function deleteTransactionById(req:AuthenticatedRequest, res:Response) {
+async function deleteTransactionById(req: AuthenticatedRequest, res: Response) {
   try {
     const user = req.user;
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" });
@@ -128,7 +129,7 @@ async function deleteTransactionById(req:AuthenticatedRequest, res:Response) {
     const transaction = await db.deleteTransactionById(id);
     return res.status(200).json(transaction)
   }
-  catch (err:any) {
+  catch (err: any) {
     if (err.code === "P2025") {
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -137,15 +138,15 @@ async function deleteTransactionById(req:AuthenticatedRequest, res:Response) {
   }
 }
 
-async function getTransactionSummary(req:AuthenticatedRequest, res:Response) {
+async function getTransactionSummary(req: AuthenticatedRequest, res: Response) {
   try {
     const user = req.user
-    if(!user)  return res.status(401).json({ message: "Unauthorized" });
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
     const transactions = await db.getTransactionByUserId(user.id);
     let totalIncome = 0
     let totalExpense = 0
 
-    transactions.forEach((transaction:Transaction )=> {
+    transactions.forEach((transaction: Transaction) => {
       if (transaction.type === 'INCOME') {
         totalIncome += transaction.amount
       }
@@ -168,10 +169,62 @@ async function getTransactionSummary(req:AuthenticatedRequest, res:Response) {
   }
 }
 
-export{
+async function getExpenseByCategory(req: AuthenticatedRequest, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) return res.status(401).json({ message: "Unauthorized" });
+    const data = await db.getExpenseByCategory(user.id);
+    const categories = await dbCategory.getCategoryByUserId(user.id);
+    
+    const result = data.map((group)=>{
+      const category = categories.find(cat=> cat.id === group.categoryId);
+      return {
+        categoryId: group.categoryId,
+        name: category? category.name: "Unknown",
+        amount: group._sum.amount
+      }
+    })
+
+    return res.status(200).json(result);
+    
+  }
+  catch(err){
+    return res.status(500).json({ message: "Couldn't get Expense By Category" })
+  }
+}
+
+async function getMonthlyTransaction(req:AuthenticatedRequest , res:Response){
+  try{
+    const user = req.user;
+    if(!user) return res.status(401).json({message: "Unauthorized"});
+
+    const data  = await db.getMonthlyTransaction(user.id);
+    const categories = await dbCategory.getCategoryByUserId(user.id);
+
+    const result = data.map((group)=>{
+      const category = categories.find(cat=>cat.id === group.categoryId);
+      return {
+        type: group.type,
+        categoryId: group.categoryId,
+        name: category? category.name : "Unknown",
+        date: group.date,
+        amount: group._sum.amount
+      }
+    })
+
+    return res.status(200).json(result)
+  }
+  catch(err){
+    return res.status(500).json({ message: "Couldn't get monthly transaction" })
+  }
+}
+
+export {
   getTransactionByUserId,
   createTransaction,
   updateTransactionById,
   deleteTransactionById,
-  getTransactionSummary
+  getTransactionSummary,
+  getExpenseByCategory,
+  getMonthlyTransaction
 }

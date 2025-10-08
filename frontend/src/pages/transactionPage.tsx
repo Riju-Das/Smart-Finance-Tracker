@@ -25,7 +25,7 @@ function TransactionPage() {
 
   const fetchTransactionSummary = useTransactionStore((state) => state.fetchTransactionSummary)
   const transactionSummary = useTransactionStore((state) => state.transactionSummary)
-  const [dialogOpen1, setDialogOpen1] = useState(false);
+  const [dialogOpen1, setDialogOpen1] = useState<boolean>(false);
   const transactions = useTransactionStore((state) => state.transactions)
   const categories = useCategoryStore((state) => state.categories)
   const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)

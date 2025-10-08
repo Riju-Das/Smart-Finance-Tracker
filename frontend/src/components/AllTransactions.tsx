@@ -29,8 +29,8 @@ import { useState } from "react";
 
 
 const AllTransactions = () => {
-  interface TransactionFormData{
-    description:string;
+  interface TransactionFormData {
+    description: string;
     type: "INCOME" | "EXPENSE";
     category: string;
     date: string;
@@ -50,9 +50,9 @@ const AllTransactions = () => {
   const [categorySort, setCategorySort] = useState<string>("")
   const [typeSort, setTypeSort] = useState<string>("")
   const [searchDesc, setSearchDesc] = useState<string>("")
-  const [editDialogIndex, setEditDialogIndex] = useState<number  | null>(null);
+  const [editDialogIndex, setEditDialogIndex] = useState<number | null>(null);
 
-  async function onSubmit(data:TransactionFormData , id:string) {
+  async function onSubmit(data: TransactionFormData, id: string) {
     try {
       await api.put(`/transactions/${id}`, {
         description: data.description,
@@ -67,26 +67,26 @@ const AllTransactions = () => {
       setEditDialogIndex(null)
     }
     catch (err) {
-      if(axios.isAxiosError(err)){
+      if (axios.isAxiosError(err)) {
         alert(err.response?.data?.message || "Failed updating Transaction");
       }
-      else{
+      else {
         alert("Failed updating Transaction");
       }
     }
   }
 
-  async function handleDeleteTransaction(id:string) {
+  async function handleDeleteTransaction(id: string) {
     try {
       await api.delete(`/transactions/${id}`)
       await fetchTransactions()
       await fetchTransactionSummary()
     }
     catch (err) {
-      if(axios.isAxiosError(err)){
+      if (axios.isAxiosError(err)) {
         alert(err?.response?.data?.message || "Failed deleting Transaction")
       }
-      else{
+      else {
         alert("Failed deleting Transaction")
       }
     }
@@ -160,7 +160,7 @@ const AllTransactions = () => {
               <TableBody>
                 {
                   transactions
-                    .filter(transaction=>transaction.description.toLowerCase().includes(searchDesc))
+                    .filter(transaction => transaction.description.toLowerCase().includes(searchDesc))
                     .filter(transaction => !typeSort || transaction.type === typeSort)
                     .filter(transaction => !categorySort || transaction.category.id === categorySort)
                     .map((transaction, idx) => (
