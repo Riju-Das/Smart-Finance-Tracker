@@ -26,8 +26,8 @@ function CategoryPage() {
     color: string;
   }
 
-  const [createColor , setCreateColor ] = useState("#1111")
-  const [updateColor , setUpdateColor ] = useState("#1111")
+  const [createColor, setCreateColor] = useState("#1111")
+  const [updateColor, setUpdateColor] = useState("#1111")
 
   const navigate = useNavigate()
   const categories = useCategoryStore((state) => state.categories)
@@ -205,9 +205,9 @@ function CategoryPage() {
                 categories.filter(category =>
                   category.name.toLowerCase().includes(searchCategory)
                 ).map((category, idx) => (
-                  <div key={category.id} 
-                  className="w-full flex md:px-7 flex-row px-4 rounded-xl bg-gray-900 py-3 sm:px-6 2xl:py-3 items-center shadow-lg"
-                  
+                  <div key={category.id}
+                    className="w-full flex md:px-7 flex-row px-4 rounded-xl bg-gray-900 py-3 sm:px-6 2xl:py-3 items-center shadow-lg"
+
                   >
 
                     <div className='w-1/2 flex items-center h-full text-white  text-xs 2xl:text-lg xl:text-md  '>
@@ -225,8 +225,11 @@ function CategoryPage() {
                         <DialogTrigger asChild>
                           <span onClick={() => {
                             setDialogOpen1(false);
-
-                            setEditDialogIndex(idx)
+                            setEditDialogIndex(idx);
+                            reset2({
+                              category:category.name,
+                              color:category.color
+                            })
                           }}>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 xl:h-6 xl:w-6 text-gray-300 hover:text-white transition-colors duration-150 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536M9 13l6.586-6.586a2 2 0 112.828 2.828L11.828 15.828a2 2 0 01-2.828 0L9 13zm0 0V17h4" />
@@ -270,8 +273,6 @@ function CategoryPage() {
                               <Input
                                 required
                                 id="color"
-                                value={updateColor}
-                                onChange={e=>setUpdateColor(e.target.value)}
                                 type="color"
                                 {...register2("color")}
                               />

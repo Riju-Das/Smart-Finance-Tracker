@@ -10,6 +10,7 @@ interface Transaction {
   category: {
     id: string;
     name: string;
+    color:string;
   };
 }
 

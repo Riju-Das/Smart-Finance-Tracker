@@ -3,7 +3,8 @@ import api from "../lib/api";
 
 interface Category {
   id: string;
-  name: string
+  name: string;
+  color:string
 }
 
 interface CategoryStore{

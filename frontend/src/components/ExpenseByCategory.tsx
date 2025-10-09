@@ -1,41 +1,57 @@
+import { useState, useEffect } from "react";
+import api from "@/lib/api";
+import axios from "axios";
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#A28EFF', '#FF6F91'];
-
-const data = [
-  { name: 'Groceries', value: 8000 },
-  { name: 'Rent', value: 48000 },
-  { name: 'Utilities', value: 3000 },
-  { name: 'Transport', value: 1500 },
-  { name: 'Entertainment', value: 2000 },
-];
+interface ExpenseByCategory {
+  color: string;
+  categoryId: string;
+  name: string;
+  amount: number;
+}
 
 function ExpenseByCategory() {
 
+  const [expenseByCategory, setexpenseByCategory] = useState<ExpenseByCategory[]>([])
+
+  async function getExpenseByCategory() {
+    try {
+      const res = await api.get("/transactions/expenseByCategory")
+      setexpenseByCategory(res.data)
+    }
+    catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert(err?.response?.data?.message)
+      }
+    }
+  }
+
+  useEffect(() => {
+    getExpenseByCategory()
+  }, []);
 
 
   return (
     <>
-      <ResponsiveContainer width="100%" height={300}>
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={100}
-            label
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill='#FF6F91' />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      </ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={expenseByCategory as any}
+              dataKey="amount"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius="80%"
+              label
+            >
+              {expenseByCategory.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip />
+              <Legend layout="vertical" align="right" verticalAlign="middle" />
+          </PieChart>
+        </ResponsiveContainer>
     </>
   )
 }
