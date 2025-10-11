@@ -4,6 +4,7 @@ import * as jwt from "jsonwebtoken";
 import type { Transaction } from "@prisma/client";
 import * as dbCategory from '../db/Categoryqueries'
 import {format} from "date-fns"
+import { IncomingMessage } from "http";
 
 interface AuthenticatedRequest extends Request {
   user?: jwt.JwtPayload | undefined;
@@ -195,12 +196,19 @@ async function getExpenseByCategory(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+interface chartData{
+  date:string;
+  income:number;
+  expense:number;
+  netAmount:number
+}
+
 async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
 
   const user = req.user;
   if(!user || !user.id) return res.status(401).json({message:"Unauthorized"});
 
-  const interval = req.query.interval
+  const interval = req.query.interval as "day" | "month" | "year"
 
   const transaction = await db.getTransactionByUserId(user.id);
 
@@ -232,7 +240,8 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
 
   })
 
-  let chartData = [];
+  let chartData:chartData[] = [];
+
   for(const date in group){
     const income = group[date].income;
     const expense = group[date].expense;
@@ -241,7 +250,7 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
       date: date,
       income:income,
       expense:expense,
-      net:net,
+      netAmount:net,
     })
   }
 
