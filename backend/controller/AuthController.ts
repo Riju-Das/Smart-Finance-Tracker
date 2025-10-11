@@ -98,7 +98,6 @@ async function refresh(req:Request , res:Response) {
     console.error("Refresh error:", err);
     return res.status(403).json({ message: "Invalid or expired refresh token" });
   }
-
 }
 
 async function logout(req:Request, res:Response) {

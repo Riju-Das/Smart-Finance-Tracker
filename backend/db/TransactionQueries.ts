@@ -94,16 +94,7 @@ async function getExpenseByCategory(userId: string) {
   })
 }
 
-async function getMonthlyTransaction(userId: string) {
-  return await prisma.transaction.groupBy({
-    by: ['type', 'categoryId', 'date'],
-    where: {
-      userId: userId
-    },
-    _sum: { amount: true },
-    orderBy: { date: 'desc' }
-  })
-}
+
 
 export {
   getTransactionByUserId,
@@ -112,5 +103,5 @@ export {
   updateTransactionById,
   deleteTransactionById,
   getExpenseByCategory,
-  getMonthlyTransaction
+
 }

@@ -3,6 +3,7 @@ import type { Request, Response } from "express";
 import * as jwt from "jsonwebtoken";
 import type { Transaction } from "@prisma/client";
 import * as dbCategory from '../db/Categoryqueries'
+import {format} from "date-fns"
 
 interface AuthenticatedRequest extends Request {
   user?: jwt.JwtPayload | undefined;
@@ -194,32 +195,65 @@ async function getExpenseByCategory(req: AuthenticatedRequest, res: Response) {
   }
 }
 
-async function getMonthlyTransaction(req:AuthenticatedRequest , res:Response){
-  try{
-    const user = req.user;
-    if(!user) return res.status(401).json({message: "Unauthorized"});
+async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
 
-    const data  = await db.getMonthlyTransaction(user.id);
-    const categories = await dbCategory.getCategoryByUserId(user.id);
+  const user = req.user;
+  if(!user || !user.id) return res.status(401).json({message:"Unauthorized"});
 
-    const result = data.map((group)=>{
-      const category = categories.find(cat=>cat.id === group.categoryId);
-      return {
-        type: group.type,
-        categoryId: group.categoryId,
-        name: category? category.name : "Unknown",
-        color: category? category.color: "#1111",
-        date: group.date,
-        amount: group._sum.amount
-      }
+  const interval = req.query.interval
+
+  const transaction = await db.getTransactionByUserId(user.id);
+
+  if(transaction.length === 0) return res.json({interval, data:[]});
+
+  const group: Record<string , {income:number , expense:number}> = {};
+
+  transaction.forEach(transaction=>{
+    let key = "";
+    if(interval === "day"){
+      key = format(new Date(transaction.date), "yyyy-MM-dd")
+    }
+    if(interval ==="month"){
+      key = format(new Date(transaction.date), "yyyy-MM")
+    }
+    if(interval ==="year"){
+      key = format(new Date(transaction.date), "yyyy");
+    }
+
+    if(!group[key]){
+      group[key] = {income:0, expense:0};
+    }
+    if(transaction.type==="INCOME"){
+      group[key].income += transaction.amount;
+    }
+    else if(transaction.type==="EXPENSE"){
+      group[key].expense += transaction.amount
+    }
+
+  })
+
+  let chartData = [];
+  for(const date in group){
+    const income = group[date].income;
+    const expense = group[date].expense;
+    const net = income - expense;
+    chartData.push({
+      date: date,
+      income:income,
+      expense:expense,
+      net:net,
     })
+  }
 
-    return res.status(200).json(result)
-  }
-  catch(err){
-    return res.status(500).json({ message: "Couldn't get monthly transaction" })
-  }
+  const sortData = chartData.sort((a,b)=>a.date.localeCompare(b.date))
+
+  const revisedData= chartData.slice(-5)
+
+  return res.status(200).json({interval, data:revisedData})
+
 }
+
+
 
 export {
   getTransactionByUserId,
@@ -228,5 +262,5 @@ export {
   deleteTransactionById,
   getTransactionSummary,
   getExpenseByCategory,
-  getMonthlyTransaction
+  getTransactionTimeseries
 }

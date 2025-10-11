@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import ExpenseByCategory from "./ExpenseByCategory"
 import api from "@/lib/api";
 import axios from "axios";
+import MonthlyTransactionAnalytics  from "./MonthlyTransactionAnalytics"
 
 function TransactionAnalytics() {
 
@@ -12,8 +13,13 @@ function TransactionAnalytics() {
         <div className="w-full h-full">
           <ExpenseByCategory />
         </div>
+        <div className="w-full h-full">
+          <MonthlyTransactionAnalytics />
+        </div>
+  
       </div>
     </div>
+    
   )
 }
 
