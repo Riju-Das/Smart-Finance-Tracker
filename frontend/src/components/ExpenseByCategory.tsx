@@ -32,7 +32,11 @@ function ExpenseByCategory() {
 
 
   return (
-    <>
+    <div className="flex flex-col border-1 border-white/10  md:p-5 p-2 gap-5 rounded-2xl  2xl:h-140 md:h-100  h-80 bg-gray-950">
+      <div className=" text-center  font-bold md:text-start md:text-3xl">
+        Expense By Category
+      </div>
+      <div className="min-h-[80%] w-full ">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -41,18 +45,22 @@ function ExpenseByCategory() {
               nameKey="name"
               cx="50%"
               cy="50%"
-              outerRadius="80%"
-              label
+              outerRadius="85%"
+              innerRadius="50%"
+              stroke="#0a0a0a"
+              strokeWidth={4}
             >
               {expenseByCategory.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
             <Tooltip />
-              <Legend layout="vertical" align="right" verticalAlign="middle" />
+              <Legend layout="vertical" align="right" verticalAlign="bottom"/>
           </PieChart>
         </ResponsiveContainer>
-    </>
+      </div>
+
+    </div>
   )
 }
 

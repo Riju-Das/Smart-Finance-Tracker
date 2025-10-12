@@ -96,30 +96,15 @@ interface FadeInDivProps {
 export const FadeInDiv = ({
   className,
   tabs,
-  hovering
 }: FadeInDivProps) => {
-  const isActive = (tab: TabType) => {
-    return tabs[0] ? tab.value === tabs[0].value : false;
-  };
+  const activeTab = tabs[0];
   return (
-    <div className="relative w-full h-full">
-      {tabs.map((tab, idx) => (
-        <motion.div
-          key={tab.value}
-          layoutId={tab.value}
-          style={{
-            scale: 1 - idx * 0.1,
-            top: hovering ? idx * -50 : 0,
-            zIndex: -idx,
-            opacity: idx < 3 ? 1 - idx * 0.1 : 0,
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isActive(tab) ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-          className={cn("w-full h-full absolute top-0 left-0", className)}>
-          {tab.content}
-        </motion.div>
-      ))}
+    <div className={cn("relative w-full h-full", className)}>
+      {activeTab && (
+        <div className="w-full absolute h-full">
+          {activeTab.content}
+        </div>
+      )}
     </div>
   );
 };

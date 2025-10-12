@@ -88,12 +88,12 @@ function TransactionPage() {
   ];
 
   return (
-    <div className="min-h-screen overflow-auto md:p-10 p-3 bg-gradient-to-br from-black via-gray-900 to-black ">
+    <div className="min-h-screen overflow-auto  md:p-10 p-3 bg-gradient-to-br from-black via-gray-900 to-black ">
       <h1 className="2xl:text-5xl md:mb-8 xl:text-4xl text-3xl mb-5 font-semibold text-white">
         Transaction
       </h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
+      <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8  ">
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Income</div>
           <div className="md:text-2xl font-bold text-xs md:mt-2">₹{transactionSummary.totalIncome.toLocaleString()}</div>
@@ -104,7 +104,14 @@ function TransactionPage() {
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Net Amount</div>
-          <div className="md:text-2xl text-xs font-bold md:mt-2">₹{transactionSummary.netAmount}</div>
+          {
+            transactionSummary.netAmount>0?(
+              <div className="md:text-2xl text-xs text-green-500 font-bold md:mt-2">₹{transactionSummary.netAmount}</div>
+            ):(
+              <div className="md:text-2xl text-xs text-red-600 font-bold md:mt-2">₹{transactionSummary.netAmount}</div>
+            )
+          }
+          
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Transactions</div>
@@ -253,7 +260,7 @@ function TransactionPage() {
         </button>
 
       </div>
-
+    
       <Tabs tabs={tabs}
         contentClassName="w-full bg-black rounded-xl"
       />

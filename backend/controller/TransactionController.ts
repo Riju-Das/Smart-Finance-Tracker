@@ -256,7 +256,7 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
 
   const sortData = chartData.sort((a,b)=>a.date.localeCompare(b.date))
 
-  const revisedData= sortData.slice(-5)
+  const revisedData= sortData.slice(-7)
 
   return res.status(200).json({interval, data:revisedData})
 
