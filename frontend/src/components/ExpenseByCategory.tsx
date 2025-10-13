@@ -46,9 +46,9 @@ function ExpenseByCategory() {
               cx="50%"
               cy="50%"
               outerRadius="85%"
-              innerRadius="50%"
-              stroke="#0a0a0a"
-              strokeWidth={4}
+              innerRadius="45%"
+              paddingAngle={5}
+              strokeWidth={1}
             >
               {expenseByCategory.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />

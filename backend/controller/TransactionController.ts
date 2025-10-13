@@ -241,8 +241,13 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
   })
 
   let chartData:chartData[] = [];
+  let totalIncome = 0;
+  let totalExpense = 0;
 
-  for(const date in group){
+  const sortedDates = Object.keys(group).sort();
+
+  for(const date of sortedDates){
+
     const income = group[date].income;
     const expense = group[date].expense;
     const net = income - expense;
@@ -254,9 +259,8 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
     })
   }
 
-  const sortData = chartData.sort((a,b)=>a.date.localeCompare(b.date))
-
-  const revisedData= sortData.slice(-7)
+  
+  const revisedData= chartData.slice(-7)
 
   return res.status(200).json({interval, data:revisedData})
 

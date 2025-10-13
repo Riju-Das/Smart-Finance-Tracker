@@ -12,7 +12,7 @@ interface MonthlyTransaction {
 
 
 function MonthlyTransactionAnalytics() {
-  const [interval, setInterval] = useState<"day" | "year" | "month">("day")
+  const [interval, setInterval] = useState<"day" | "year" | "month">("month")
   const [intervalData, setIntervalData] = useState<MonthlyTransaction[]>([]);
 
   async function fetchTimeseries() {
@@ -38,8 +38,8 @@ function MonthlyTransactionAnalytics() {
       </div>
       <div>
         <select name="interval" className="p-1 md:text-base text-xs" id="interval" onChange={e => setInterval(e.target.value as any)}>
-          <option value="day" className="bg-black">Daily</option>
           <option value="month" className="bg-black">Monthly</option>
+          <option value="day" className="bg-black">Daily</option>
           <option value="year" className="bg-black">Yearly</option>
         </select>
       </div>
@@ -65,7 +65,7 @@ function MonthlyTransactionAnalytics() {
           <Legend />
           <Line type="monotone" dataKey="income" stroke="#00e571" strokeWidth={2} name="Income" />
           <Line type="monotone" dataKey="expense" stroke="#ff4d4f" strokeWidth={2} name="Expense" />
-          <Line type="monotone" dataKey="netAmount" stroke="#8884d8" strokeWidth={2} name="Net Balance" />
+          <Line type="monotone" dataKey="netAmount" stroke="#8884d8" strokeWidth={2} name="Savings" />
         </LineChart>
       </ResponsiveContainer>
     </div>
