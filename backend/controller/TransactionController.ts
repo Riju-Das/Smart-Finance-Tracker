@@ -4,7 +4,6 @@ import * as jwt from "jsonwebtoken";
 import type { Transaction } from "@prisma/client";
 import * as dbCategory from '../db/Categoryqueries'
 import {format} from "date-fns"
-import { IncomingMessage } from "http";
 
 interface AuthenticatedRequest extends Request {
   user?: jwt.JwtPayload | undefined;

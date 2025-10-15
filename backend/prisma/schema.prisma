@@ -24,6 +24,7 @@ model User {
   transactions  Transaction[]
   category      Category[]
   refreshTokens String[]      @default([])
+  budgets       Budget[]
 }
 
 model Transaction {
@@ -44,12 +45,33 @@ model Category {
   name         String
   transactions Transaction[]
   date         DateTime      @default(now())
-  color        String        
+  color        String
   userId       String
   user         User          @relation(fields: [userId], references: [id])
+  budget       Budget[]
 }
 
 enum TransactionType {
   INCOME
   EXPENSE
+}
+
+model Budget {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+  period     BudgetPeriod
+  amount     Float
+  createdAt  DateTime @default(now())
+  startDate  DateTime
+  endDate    DateTime?
+  @@unique([userId,categoryId,period, startDate])
+}
+
+enum BudgetPeriod {
+  MONTH
+  YEAR
+  WEEK
 }
