@@ -31,7 +31,7 @@ route.get("/transactions/timeseries" , authenticateToken , TransactionController
 
 route.get("/budget", authenticateToken, BudgetController.getBudgets )
 route.post("/budget" , authenticateToken , BudgetController.createBudget);
-route.put("/budget", authenticateToken, BudgetController.updateBudget)
-route.delete("/budget", authenticateToken, BudgetController.deleteBudget)
+route.put("/budget/:id", authenticateToken, BudgetController.updateBudget)
+route.delete("/budget/:id", authenticateToken, BudgetController.deleteBudget)
 
 export default route

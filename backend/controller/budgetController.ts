@@ -60,9 +60,12 @@ export async function updateBudget(req: AuthenticatedRequest, res: Response) {
     const user = req.user;
     if (!user) return res.status(400).json({ message: "Unauthorized" });
 
-    const { id, categoryId, period, amount, startDate, endDate } = req.body
+    const { id } = req.params;
 
-    if (!id) return res.status(400).json({ message: "Category update error" });
+    if (!id) return res.status(400).json({ message: "invalid id" })
+
+    const { categoryId, period, amount, startDate, endDate } = req.body
+
     if (!categoryId) return res.status(400).json({ message: "categoryId is required" });
     if (!period) return res.status(400).json({ message: "period is required" });
     if (!amount) return res.status(400).json({ message: "amount is required" });
@@ -70,7 +73,7 @@ export async function updateBudget(req: AuthenticatedRequest, res: Response) {
 
     const budgetUserId = await db.getUserIdByBudgetId(id)
 
-    if (budgetUserId !== user.id) {
+    if (!budgetUserId || budgetUserId.userId !== user.id) {
       return res.status(400).json({ message: "Unauthorized" })
     }
 
@@ -88,11 +91,14 @@ export async function deleteBudget(req: AuthenticatedRequest, res: Response) {
     const user = req.user;
     if (!user) return res.status(400).json({ message: "Unauthorized" });
 
-    const { id } = req.body;
+
+    const { id } = req.params;
+
+    if (!id) return res.status(400).json({ message: "invalid id" })
 
     const budgetUserId = await db.getUserIdByBudgetId(id)
 
-    if (budgetUserId !== user.id) {
+    if (!budgetUserId || budgetUserId.userId !== user.id) {
       return res.status(400).json({ message: "Unauthorized" })
     }
 
