@@ -3,7 +3,7 @@ import authenticateToken from "../config/authenticate"
 import * as AuthController from "../controller/AuthController"
 import * as CategoryController from "../controller/CategoryController"
 import * as TransactionController from "../controller/TransactionController"
-
+import * as BudgetController from "../controller/budgetController"
 
 const route = express.Router()
 
@@ -28,5 +28,10 @@ route.get("/transactions/summary" , authenticateToken , TransactionController.ge
 route.get("/transactions/expenseByCategory" , authenticateToken , TransactionController.getExpenseByCategory);
 
 route.get("/transactions/timeseries" , authenticateToken , TransactionController.getTransactionTimeseries)
+
+route.get("/budget", authenticateToken, BudgetController.getBudgets )
+route.post("/budget" , authenticateToken , BudgetController.createBudget);
+route.put("/budget", authenticateToken, BudgetController.updateBudget)
+route.delete("/budget", authenticateToken, BudgetController.deleteBudget)
 
 export default route
