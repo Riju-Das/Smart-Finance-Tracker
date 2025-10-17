@@ -26,8 +26,6 @@ function CategoryPage() {
     color: string;
   }
 
-  const [createColor, setCreateColor] = useState("#1111")
-  const [updateColor, setUpdateColor] = useState("#1111")
 
   const navigate = useNavigate()
   const categories = useCategoryStore((state) => state.categories)

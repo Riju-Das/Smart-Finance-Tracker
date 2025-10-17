@@ -18,10 +18,15 @@ export async function getBudgets(req: AuthenticatedRequest, res: Response) {
 
     const budgets = await Promise.all(
       result.map(async (budget) => {
-        const totalExpense = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toISOString(), budget.endDate?.toISOString())
+
+        const totalExpense: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toISOString(), budget.endDate?.toISOString())
+
+        const budgetPercentage = (totalExpense / budget.amount) * 100;
+
         return {
           budget,
-          totalExpense
+          totalExpense,
+          budgetPercentage
         }
       })
     )

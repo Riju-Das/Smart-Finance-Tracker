@@ -5,6 +5,7 @@ import App from "./App.js"
 import Dashboard from "./pages/dashboard"
 import TransactionPage from "./pages/transactionPage"
 import CategoryPage from "./pages/categoryPage"
+import BudgetPage from "./pages/budgetPage"
 
 const route = [
   {
@@ -33,6 +34,10 @@ const route = [
       {
         path: "/category",
         element: <CategoryPage />
+      },
+      {
+        path:"/budget",
+        element: <BudgetPage/>
       }
     ]
 
