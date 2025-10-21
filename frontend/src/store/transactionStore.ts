@@ -3,10 +3,12 @@ import api from "../lib/api";
 
 interface Transaction {
   id: string;
+  userId:string
   amount: number;
   type: "INCOME" | "EXPENSE";
   description: string;
   date: string;
+  categoryId:string;
   category: {
     id: string;
     name: string;

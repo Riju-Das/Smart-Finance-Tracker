@@ -3,6 +3,7 @@ import api from "../lib/api";
 
 interface Category {
   id: string;
+  userId:string;
   name: string;
   color:string
 }

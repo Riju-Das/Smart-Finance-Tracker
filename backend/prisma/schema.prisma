@@ -66,7 +66,7 @@ model Budget {
   amount     Float
   createdAt  DateTime @default(now())
   startDate  DateTime
-  endDate    DateTime?
+  endDate    DateTime
   @@unique([userId,categoryId,period, startDate])
 }
 

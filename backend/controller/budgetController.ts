@@ -19,13 +19,13 @@ export async function getBudgets(req: AuthenticatedRequest, res: Response) {
     const budgets = await Promise.all(
       result.map(async (budget) => {
 
-        const totalExpense: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toISOString(), budget.endDate?.toISOString())
-
-        const budgetPercentage = (totalExpense / budget.amount) * 100;
+        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toISOString(), budget.endDate.toISOString())
+        const total = Number(totalExpenseResult._sum.amount)
+        const budgetPercentage = Math.round((total/ budget.amount) * 100);
 
         return {
           budget,
-          totalExpense,
+          totalExpense:total,
           budgetPercentage
         }
       })
@@ -50,12 +50,16 @@ export async function createBudget(req: AuthenticatedRequest, res: Response) {
     if (!period) return res.status(400).json({ message: "period is required" });
     if (!amount) return res.status(400).json({ message: "amount is required" });
     if (!startDate) return res.status(400).json({ message: "start date is required" });
+    if (!endDate) return res.status(400).json({ message: "end date is required" });
 
-    const budget = await db.createBudget({ userId: user.id, categoryId, period, amount, startDate, endDate })
+    const budget = await db.createBudget({ userId: user.id, categoryId, period, amount, startDate: new Date(startDate) , endDate: new Date(endDate) })
+
+    console.log(budget)
 
     return res.status(200).json(budget)
   }
   catch (err) {
+    console.log(err)
     return res.status(500).json({ message: "Error creating budget" })
   }
 }
@@ -75,6 +79,7 @@ export async function updateBudget(req: AuthenticatedRequest, res: Response) {
     if (!period) return res.status(400).json({ message: "period is required" });
     if (!amount) return res.status(400).json({ message: "amount is required" });
     if (!startDate) return res.status(400).json({ message: "start date is required" });
+    if (!endDate) return res.status(400).json({ message: "end date is required" });
 
     const budgetUserId = await db.getUserIdByBudgetId(id)
 

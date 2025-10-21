@@ -80,6 +80,7 @@ async function refresh(req:Request , res:Response) {
     const token = req.cookies.refreshToken;
     if (!token) return res.status(403).json({ message: "No refresh token" });
     let userData:any;
+    
     try{
       userData = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET as string)
     }

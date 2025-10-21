@@ -7,8 +7,8 @@ interface Budget {
   categoryId: string
   period: BudgetPeriod
   amount: number
-  startDate: string,
-  endDate?: string
+  startDate: Date,
+  endDate: Date
 }
 
 async function createBudget(budget: Budget) {
@@ -73,7 +73,7 @@ async function getTotalExpenseOfBudget(
   userId: string,
   categoryId: string,
   startDate:string,
-  endDate?: string
+  endDate: string
 ){
   return await prisma.transaction.aggregate({
     _sum:{
@@ -84,7 +84,7 @@ async function getTotalExpenseOfBudget(
       categoryId: categoryId,
       date:{
         gte: new Date(startDate),
-        lte: endDate?new Date(endDate): undefined,
+        lte: new Date(endDate),
       }
     }
   })
