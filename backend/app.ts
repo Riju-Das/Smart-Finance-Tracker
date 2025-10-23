@@ -3,10 +3,13 @@ import route from "./route/route";
 import { config } from "dotenv";
 import  cors from "cors";
 import cookieParser from "cookie-parser";
+import { startBudgetCrons } from "./controller/budgetController";
 
 config()
-
+startBudgetCrons()
 const app = express()
+
+
 
 app.use(cors({
   origin: 'http://localhost:5173',

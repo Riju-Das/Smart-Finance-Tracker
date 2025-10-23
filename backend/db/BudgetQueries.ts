@@ -8,7 +8,6 @@ interface Budget {
   period: BudgetPeriod
   amount: number
   startDate: Date,
-  endDate: Date
 }
 
 async function createBudget(budget: Budget) {
@@ -18,8 +17,7 @@ async function createBudget(budget: Budget) {
       categoryId: budget.categoryId,
       period: budget.period,
       amount: budget.amount,
-      startDate: budget.startDate,
-      endDate: budget.endDate,
+      startDate: budget.startDate
     }
   })
 }
@@ -35,6 +33,14 @@ async function getBudgets(userId:string) {
   })
 }
 
+async function getBudgetOfPeriod(period:BudgetPeriod){
+  return await prisma.budget.findMany({
+    where:{
+      period:period
+    }
+  })
+}
+
 async function updateBudget(id:string,budget: Budget){
   return await prisma.budget.update({
     where:{
@@ -45,7 +51,17 @@ async function updateBudget(id:string,budget: Budget){
       period: budget.period,
       amount: budget.amount,
       startDate: budget.startDate,
-      endDate: budget.endDate,
+    }
+  })
+}
+
+async function updateBudgetStartDate(id:string , startDate: Date ) {
+  return await prisma.budget.update({
+    where:{
+      id:id
+    },
+    data:{
+      startDate:startDate
     }
   })
 }
@@ -73,7 +89,7 @@ async function getTotalExpenseOfBudget(
   userId: string,
   categoryId: string,
   startDate:string,
-  endDate: string
+
 ){
   return await prisma.transaction.aggregate({
     _sum:{
@@ -84,7 +100,6 @@ async function getTotalExpenseOfBudget(
       categoryId: categoryId,
       date:{
         gte: new Date(startDate),
-        lte: new Date(endDate),
       }
     }
   })
@@ -96,5 +111,7 @@ export{
   getBudgets,
   deleteBudget,
   getUserIdByBudgetId,
-  getTotalExpenseOfBudget
+  getTotalExpenseOfBudget,
+  updateBudgetStartDate,
+  getBudgetOfPeriod
 }

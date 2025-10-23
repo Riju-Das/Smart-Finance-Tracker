@@ -25,8 +25,6 @@ function BudgetProgress() {
     categoryId: string;
     period: "MONTH" | "DAY" | "YEAR";
     amount: number;
-    startDate: string;
-    endDate: string
   }
 
   const {
@@ -73,7 +71,7 @@ function BudgetProgress() {
 
             </div>
 
-            <div className="mb-5">
+            <div className="">
               <div >
                 {
                   budget.budgetPercentage > 100 ? (

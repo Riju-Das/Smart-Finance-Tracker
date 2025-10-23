@@ -18,6 +18,7 @@ import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import axios from 'axios';
+import { useBudgetStore } from '@/store/budgetStore';
 
 function CategoryPage() {
 
@@ -34,6 +35,8 @@ function CategoryPage() {
   const [editDialogIndex, setEditDialogIndex] = useState<number | null>(null);
   const [searchCategory, setSearchCategory] = useState<string>("")
   const transactionSummary = useTransactionStore((state) => state.transactionSummary)
+
+  const fetchBudgets = useBudgetStore((state)=>state.fetchBudgets)
 
   const {
     register,
@@ -57,6 +60,7 @@ function CategoryPage() {
         color: data.color
       })
       await fetchCategories()
+      await fetchBudgets()
       reset()
       setDialogOpen1(false);
     }
@@ -77,6 +81,7 @@ function CategoryPage() {
         color: data.color
       })
       await fetchCategories()
+      await fetchBudgets()
       reset2()
       setEditDialogIndex(null)
     }

@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form"
 import { useState } from "react";
 import AllTransactions from "../components/AllTransactions";
 import axios from "axios";
+import { useBudgetStore } from '@/store/budgetStore';
 
 function TransactionPage() {
 
@@ -30,6 +31,7 @@ function TransactionPage() {
   const transactions = useTransactionStore((state) => state.transactions)
   const categories = useCategoryStore((state) => state.categories)
   const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)
+  const fetchBudgets = useBudgetStore((state) => state.fetchBudgets)
 
   interface TransactionFormType {
     amount: number;
@@ -47,7 +49,7 @@ function TransactionPage() {
   } = useForm<TransactionFormType>()
 
 
-  async function onSubmit(data:TransactionFormType) {
+  async function onSubmit(data: TransactionFormType) {
 
     try {
       await api.post("/transactions", {
@@ -59,12 +61,13 @@ function TransactionPage() {
       })
       await fetchTransactions()
       await fetchTransactionSummary()
+      await fetchBudgets()
 
       reset()
       setDialogOpen1(false);
     }
     catch (err) {
-      if(axios.isAxiosError(err)){
+      if (axios.isAxiosError(err)) {
         alert(err?.response?.data?.message || "Failed creating a new Transaction")
       }
     }
@@ -105,13 +108,13 @@ function TransactionPage() {
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Net Amount</div>
           {
-            transactionSummary.netAmount>0?(
+            transactionSummary.netAmount > 0 ? (
               <div className="md:text-2xl text-xs text-green-500 font-bold md:mt-2">₹{transactionSummary.netAmount}</div>
-            ):(
+            ) : (
               <div className="md:text-2xl text-xs text-red-600 font-bold md:mt-2">₹{transactionSummary.netAmount}</div>
             )
           }
-          
+
         </div>
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Transactions</div>
@@ -260,7 +263,7 @@ function TransactionPage() {
         </button>
 
       </div>
-    
+
       <Tabs tabs={tabs}
         contentClassName="w-full bg-black rounded-xl"
       />

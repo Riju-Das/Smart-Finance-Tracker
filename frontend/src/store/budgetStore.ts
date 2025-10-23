@@ -13,8 +13,6 @@ interface Budget {
     }
     period: string;
     amount: number;
-    startDate: string;
-    endDate: string
   }
   totalExpense: number;
   budgetPercentage: number

@@ -10,6 +10,7 @@ function Progress({
   value,
   ...props
 }: React.ComponentProps<typeof ProgressPrimitive.Root>) {
+
   return (
     <ProgressPrimitive.Root
       data-slot="progress"
@@ -19,11 +20,34 @@ function Progress({
       )}
       {...props}
     >
-      <ProgressPrimitive.Indicator
-        data-slot="progress-indicator"
-        className="bg-gray-400 h-full w-full flex-1 transition-all"
-        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-      />
+      {
+        value && value > 50 && value < 80 && (
+          <ProgressPrimitive.Indicator
+            data-slot="progress-indicator"
+            className="bg-yellow-300 h-full w-full flex-1 transition-all"
+            style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+          />
+        )
+      }
+      {
+        value && value < 50 && (
+          <ProgressPrimitive.Indicator
+            data-slot="progress-indicator"
+            className="bg-green-500 h-full w-full flex-1 transition-all"
+            style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+          />
+        )
+      }
+      {
+        value && value > 80 && (
+          <ProgressPrimitive.Indicator
+            data-slot="progress-indicator"
+            className="bg-red-600 h-full w-full flex-1 transition-all"
+            style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+          />
+        )
+      }
+
     </ProgressPrimitive.Root>
   )
 }

@@ -66,7 +66,6 @@ model Budget {
   amount     Float
   createdAt  DateTime @default(now())
   startDate  DateTime
-  endDate    DateTime
   @@unique([userId,categoryId,period, startDate])
 }
 
@@ -74,4 +73,5 @@ enum BudgetPeriod {
   MONTH
   YEAR
   WEEK
+  DAY
 }

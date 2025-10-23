@@ -27,8 +27,6 @@ function BudgetPage() {
     categoryId: string;
     period: "MONTH" | "DAY" | "YEAR";
     amount: number;
-    startDate: string;
-    endDate: string
   }
 
   const {
@@ -49,8 +47,7 @@ function BudgetPage() {
         categoryId: data.categoryId,
         period: data.period,
         amount: Number(data.amount),
-        startDate: data.startDate,
-        endDate: data.endDate
+
       })
       console.log(budgets)
       await fetchBudgets();
@@ -119,6 +116,7 @@ function BudgetPage() {
                 <option value="" disabled className=" bg-black">Select Period</option>
                 <option value="MONTH" className="bg-black text-white">Month</option>
                 <option value="YEAR" className="bg-black">Year</option>
+                <option value="WEEK" className="bg-black">Week</option>
                 <option value="DAY" className="bg-black">Day</option>
 
               </select>
@@ -132,26 +130,6 @@ function BudgetPage() {
                 placeholder="Write Budget Amount"
                 type="number"
                 {...register("amount", { required: true })}
-              />
-            </LabelInputContainer>
-
-            <LabelInputContainer className="flex-1 mb-7  ">
-              <Label htmlFor="startDate" className="mb-2">Start Date:</Label>
-              <Input
-                type="date"
-                id="startDate"
-                className="w-full "
-                {...register("startDate", { required: true })}
-              />
-            </LabelInputContainer>
-
-            <LabelInputContainer className="flex-1 mb-7  ">
-              <Label htmlFor="endDate" className="mb-2">End Date:</Label>
-              <Input
-                type="Date"
-                id="endDate"
-                className="w-full "
-                {...register("endDate", { required: true })}
               />
             </LabelInputContainer>
 
