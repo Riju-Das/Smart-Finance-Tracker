@@ -20,33 +20,16 @@ function Progress({
       )}
       {...props}
     >
-      {
-        value && value > 50 && value < 80 && (
-          <ProgressPrimitive.Indicator
-            data-slot="progress-indicator"
-            className="bg-yellow-300 h-full w-full flex-1 transition-all"
-            style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-          />
-        )
-      }
-      {
-        value && value < 50 && (
-          <ProgressPrimitive.Indicator
-            data-slot="progress-indicator"
-            className="bg-green-500 h-full w-full flex-1 transition-all"
-            style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-          />
-        )
-      }
-      {
-        value && value > 80 && (
-          <ProgressPrimitive.Indicator
-            data-slot="progress-indicator"
-            className="bg-red-600 h-full w-full flex-1 transition-all"
-            style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
-          />
-        )
-      }
+      <ProgressPrimitive.Indicator
+        className={
+          value && value < 50 ? 
+          "bg-green-500 h-full w-full flex-1 transition-all"
+            : value && value < 80 ? 
+            "bg-yellow-300 h-full w-full flex-1 transition-all"
+              : "bg-red-600 h-full w-full flex-1 transition-all"
+        }
+        style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+      />
 
     </ProgressPrimitive.Root>
   )

@@ -19,10 +19,9 @@ export async function getBudgets(req: AuthenticatedRequest, res: Response) {
     const budgets = await Promise.all(
       result.map(async (budget) => {
 
-        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toISOString())
-        const total = Number(totalExpenseResult._sum.amount)
-        const budgetPercentage = Math.round((total / budget.amount) * 100);
-
+        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toISOString())  || { _sum: { amount: 0 } };
+        const total = Number(totalExpenseResult._sum.amount) || 0
+        const budgetPercentage = budget.amount > 0? Math.round((total / budget.amount) * 100): 0;
         return {
           budget,
           totalExpense: total,
@@ -182,7 +181,7 @@ export function startBudgetCrons() {
     const weeklyBudgets = await db.getBudgetOfPeriod("WEEK");
     const now = new Date();
     const day = now.getDay();
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday
+    const diff = now.getDate() - day + (day === 0 ? -6 : 1); 
     const startDate = new Date(now.getFullYear(), now.getMonth(), diff);
     for (const budget of weeklyBudgets) {
       await db.updateBudgetStartDate(budget.id, startDate);

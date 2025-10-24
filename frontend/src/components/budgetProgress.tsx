@@ -36,9 +36,9 @@ function BudgetProgress() {
 
   const budgets = useBudgetStore((state) => state.budgets)
   const [dialogOpen1, setDialogOpen1] = useState(false);
+  const [currentPeriod, setCurrentPeriod] = useState<"MONTH" | "YEAR" | "DAY" | "WEEK">("MONTH")
   const categories = useCategoryStore((state) => state.categories)
   const fetchBudgets = useBudgetStore((state) => state.fetchBudgets)
-
 
 
 
@@ -49,46 +49,66 @@ function BudgetProgress() {
           Budget Progress
         </span>
       </div>
-
+      <div>
+        <select name="interval" className="p-1 md:text-base text-xs" id="interval" onChange={e => setCurrentPeriod(e.target.value as any)}>
+          <option value="MONTH" className="bg-black">Monthly</option>
+          <option value="DAY" className="bg-black">Daily</option>
+          <option value="YEAR" className="bg-black">Yearly</option>
+          <option value="WEEK" className="bg-black">Weekly</option>
+        </select>
+      </div>
       {
-        budgets.map((budget) => (
-          <div key={budget.budget.id}>
-            <div className="mb-2">
-              <div className="gap-2">
-                <div>
-                  <span className="inline-block mr-2 w-2 h-2 rounded-4xl " style={{ backgroundColor: budget.budget.category.color}}></span>
-                  {budget.budget.category.name}
+        budgets
+          .filter(budget => budget.budget.period === currentPeriod).length > 0 ?
+          (
+            budgets
+              .filter(budget => budget.budget.period === currentPeriod)
+              .map((budget) =>
+              (
+                <div key={budget.budget.id}>
+                  <div className="mb-2">
+                    <div className="gap-2">
+                      <div>
+                        <span className="inline-block mr-2 w-2 h-2 rounded-4xl " style={{ backgroundColor: budget.budget.category.color }}></span>
+                        {budget.budget.category.name}
+                      </div>
+                      <div className="text-stone-400 text-base">
+                        ₹{budget.totalExpense} of ₹{budget.budget.amount}
+                      </div>
+
+                    </div>
+
+                    <div>
+
+                    </div>
+
+                  </div>
+
+                  <div className="">
+                    <div >
+                      {
+                        budget.budgetPercentage > 100 ? (
+                          <Progress value={100} className="w-full bg-gray-700 h-2" />
+                        ) : (
+                          <Progress value={budget.budgetPercentage || 0} className="w-full bg-black h-2" />
+                        )
+                      }
+
+                    </div>
+                    <div className="text-stone-400 my-2 text-base">
+                      {budget.budgetPercentage}% used
+                    </div>
+
+                  </div>
                 </div>
-                <div className="text-stone-400 text-base">
-                  ₹{budget.totalExpense} of ₹{budget.budget.amount}
-                </div>
-
-              </div>
-
-              <div>
-
-              </div>
-
+              )
+              )
+          ) : (
+            <div className="text-center">
+              No budget created
             </div>
+          )
 
-            <div className="">
-              <div >
-                {
-                  budget.budgetPercentage > 100 ? (
-                    <Progress value={100} className="w-full bg-gray-700 h-2" />
-                  ) : (
-                    <Progress value={budget.budgetPercentage} className="w-full bg-black h-2" />
-                  )
-                }
-
-              </div>
-              <div className="text-stone-400 my-2 text-base">
-                {budget.budgetPercentage}% used
-              </div>
-
-            </div>
-          </div>
-        ))
       }
 
       <div>
