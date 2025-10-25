@@ -57,16 +57,19 @@ enum TransactionType {
 }
 
 model Budget {
-  id         String   @id @default(uuid())
+  id         String       @id @default(uuid())
   userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  user       User         @relation(fields: [userId], references: [id])
   categoryId String
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category     @relation(fields: [categoryId], references: [id])
   period     BudgetPeriod
   amount     Float
-  createdAt  DateTime @default(now())
+  createdAt  DateTime     @default(now())
   startDate  DateTime
-  @@unique([userId,categoryId,period, startDate])
+  endDate    DateTime
+  active     Boolean      @default(true)
+
+  @@unique([userId, categoryId, period, startDate])
 }
 
 enum BudgetPeriod {
