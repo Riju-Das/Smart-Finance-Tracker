@@ -15,14 +15,14 @@ interface Budget {
 async function createBudget(budget: Budget) {
 
   await prisma.budget.updateMany({
-    where:{
-      userId:budget.userId,
-      categoryId:budget.categoryId,
-      period:budget.period,
-      active:true
+    where: {
+      userId: budget.userId,
+      categoryId: budget.categoryId,
+      period: budget.period,
+      active: true
     },
-    data:{
-      active:false
+    data: {
+      active: false
     }
   })
 
@@ -38,35 +38,36 @@ async function createBudget(budget: Budget) {
   })
 }
 
-async function getBudgets(userId:string) {
+async function getBudgets(userId: string) {
   return await prisma.budget.findMany({
-    where:{
-      userId:userId,
-      active:true
+    where: {
+      userId: userId,
+      active: true
     },
-    orderBy:{
-      startDate:"desc"
+    orderBy: {
+      startDate: "desc"
     },
-    include:{
-      category:true
+    include: {
+      category: true
     }
   })
 }
 
-async function getBudgetOfPeriod(period:BudgetPeriod){
+async function getBudgetOfPeriod(period: BudgetPeriod) {
   return await prisma.budget.findMany({
-    where:{
-      period:period
+    where: {
+      period: period,
+      active: true
     }
   })
 }
 
-async function updateBudget(id:string,budget: Budget){
+async function updateBudget(id: string, budget: Budget) {
   return await prisma.budget.update({
-    where:{
-      id:id
+    where: {
+      id: id
     },
-    data:{
+    data: {
       categoryId: budget.categoryId,
       period: budget.period,
       amount: budget.amount,
@@ -78,21 +79,23 @@ async function updateBudget(id:string,budget: Budget){
 
 
 
-async function deleteBudget(id:string){
-  return await prisma.budget.delete({
-    where:{
-      id:id
+async function deleteBudget(userId: string, categoryId: string, period:BudgetPeriod) {
+  return await prisma.budget.deleteMany({
+    where: {
+      userId:userId,
+      categoryId:categoryId,
+      period:period
     }
   })
 }
 
-async function getUserIdByBudgetId(id:string){
+async function getUserIdByBudgetId(id: string) {
   return await prisma.budget.findUnique({
-    where:{
-      id:id
+    where: {
+      id: id
     },
-    select:{
-      userId:true
+    select: {
+      userId: true
     }
   })
 }
@@ -100,18 +103,18 @@ async function getUserIdByBudgetId(id:string){
 async function getTotalExpenseOfBudget(
   userId: string,
   categoryId: string,
-  startDate:string,
-  endDate:string
+  startDate: string,
+  endDate: string
 
-){
+) {
   return await prisma.transaction.aggregate({
-    _sum:{
-      amount:true
+    _sum: {
+      amount: true
     },
-    where:{
+    where: {
       userId: userId,
       categoryId: categoryId,
-      date:{
+      date: {
         gte: new Date(startDate),
         lt: new Date(endDate)
       }
@@ -119,8 +122,34 @@ async function getTotalExpenseOfBudget(
   })
 }
 
+async function cleanupOldBudgets(userId: string, categoryId: string, period: BudgetPeriod) {
+  const budgetIds = await prisma.budget.findMany({
+    where: {
+      userId: userId,
+      categoryId: categoryId,
+      period: period
+    },
+    orderBy: {
+      startDate: "desc"
+    },
+    select: {
+      id: true
+    },
+    skip: 10
+  })
 
-export{
+  if (budgetIds.length > 0) {
+    await prisma.budget.deleteMany({
+      where: {
+        id: {
+          in: budgetIds.map(id => id.id)
+        }
+      }
+    })
+  }
+}
+
+export {
   createBudget,
   updateBudget,
   getBudgets,
@@ -128,4 +157,5 @@ export{
   getUserIdByBudgetId,
   getTotalExpenseOfBudget,
   getBudgetOfPeriod,
+  cleanupOldBudgets
 }

@@ -200,7 +200,7 @@ const AllTransactions = () => {
                               <DialogHeader>
                                 <DialogTitle>Update Transaction</DialogTitle>
                               </DialogHeader>
-
+                              
                               <form className="my-5" onSubmit={handleSubmit((data) => onSubmit(data, transaction.id))} >
                                 <LabelInputContainer className="mb-7">
                                   <Label htmlFor="description">Description</Label>

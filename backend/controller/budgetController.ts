@@ -1,8 +1,8 @@
-import { setDate, setMonth } from "date-fns";
 import * as db from "../db/BudgetQueries"
 import { Request, Response } from "express"
 import * as jwt from "jsonwebtoken"
 import cron from "node-cron"
+
 
 interface AuthenticatedRequest extends Request {
   user?: jwt.JwtPayload | undefined;
@@ -20,7 +20,7 @@ export async function getBudgets(req: AuthenticatedRequest, res: Response) {
     const budgets = await Promise.all(
       result.map(async (budget) => {
 
-        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toISOString(), budget.endDate.toISOString()) || { _sum: { amount: 0 } };
+        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toString(), budget.endDate.toString()) || { _sum: { amount: 0 } };
         const total = Number(totalExpenseResult._sum.amount) || 0
         const budgetPercentage = budget.amount > 0 ? Math.round((total / budget.amount) * 100) : 0;
         return {
@@ -55,24 +55,24 @@ export async function createBudget(req: AuthenticatedRequest, res: Response) {
     const now = new Date();
 
     if (period === "MONTH") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1,0,0,0,0);
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1,);
       endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + 1)
     }
     else if (period === "YEAR") {
-      startDate = new Date(now.getFullYear(), 0, 1,0,0,0,0);
+      startDate = new Date(now.getFullYear(), 0, 1,);
       endDate = new Date(startDate);
       endDate.setFullYear(endDate.getFullYear() + 1);
     }
     else if (period === "DAY") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(),0,0,0,0);
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(),);
       endDate = new Date(startDate);
       endDate.setDate(endDate.getDate() + 1)
     }
     else if (period === "WEEK") {
       const day = now.getDay();
       const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-      startDate = new Date(now.getFullYear(), now.getMonth(), diff,0,0,0,0);
+      startDate = new Date(now.getFullYear(), now.getMonth(), diff,);
       endDate = new Date(startDate);
       endDate.setDate(endDate.getDate() + 7)
     }
@@ -119,24 +119,24 @@ export async function updateBudget(req: AuthenticatedRequest, res: Response) {
     const now = new Date();
 
     if (period === "MONTH") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1,0,0,0,0);
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
       endDate = new Date(startDate);
       endDate.setMonth(endDate.getMonth() + 1)
     }
     else if (period === "YEAR") {
-      startDate = new Date(now.getFullYear(), 0, 1,0,0,0,0);
+      startDate = new Date(now.getFullYear(), 0, 1,);
       endDate = new Date(startDate);
       endDate.setFullYear(endDate.getFullYear() + 1);
     }
     else if (period === "DAY") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(),0,0,0,0);
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       endDate = new Date(startDate);
       endDate.setDate(endDate.getDate() + 1)
     }
     else if (period === "WEEK") {
       const day = now.getDay();
       const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-      startDate = new Date(now.getFullYear(), now.getMonth(), diff,0,0,0,0);
+      startDate = new Date(now.getFullYear(), now.getMonth(), diff);
       endDate = new Date(startDate);
       endDate.setDate(endDate.getDate() + 7)
     }
@@ -161,7 +161,16 @@ export async function deleteBudget(req: AuthenticatedRequest, res: Response) {
 
     const { id } = req.params;
 
-    if (!id) return res.status(400).json({ message: "invalid id" })
+    const { categoryId, period } = req.query
+
+    if (!id) return res.status(400).json({ message: "invalid id" });
+
+    if (!categoryId || typeof categoryId !== "string") return res.status(400).json({ message: "error deleting budget" });
+
+    if (period !== "MONTH" && period !== "DAY" && period !== "WEEK" && period !== "YEAR") {
+      return res.status(400).json({ message: "error deleting budget" });
+    }
+
 
     const budgetUserId = await db.getUserIdByBudgetId(id)
 
@@ -169,7 +178,7 @@ export async function deleteBudget(req: AuthenticatedRequest, res: Response) {
       return res.status(400).json({ message: "Unauthorized" })
     }
 
-    const budget = await db.deleteBudget(id)
+    const budget = await db.deleteBudget(user.id, categoryId, period)
 
     return res.status(200).json(budget)
 
@@ -179,79 +188,122 @@ export async function deleteBudget(req: AuthenticatedRequest, res: Response) {
   }
 }
 
+
+
+
+
 export function startBudgetCrons() {
 
   cron.schedule("0 0 1 * *", async () => {
-    const monthlyBudgets = await db.getBudgetOfPeriod("MONTH");
-    const now = new Date();
-    const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endDate = new Date(startDate)
-    endDate.setMonth(endDate.getMonth() + 1)
-    for (const budget of monthlyBudgets) {
-      await db.createBudget({
-        userId: budget.userId,
-        categoryId: budget.categoryId,
-        period: budget.period,
-        amount: budget.amount,
-        startDate: budget.startDate,
-        endDate: budget.endDate
-      })
+    try {
+      const monthlyBudgets = await db.getBudgetOfPeriod("MONTH");
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      const endDate = new Date(startDate)
+      endDate.setMonth(endDate.getMonth() + 1)
+      for (const budget of monthlyBudgets) {
+        await db.createBudget({
+          userId: budget.userId,
+          categoryId: budget.categoryId,
+          period: budget.period,
+          amount: budget.amount,
+          startDate: startDate,
+          endDate: endDate
+        })
+
+        await db.cleanupOldBudgets(budget.userId, budget.categoryId, budget.period)
+
+      }
+    }
+    catch (err) {
+      console.log(err)
     }
   })
 
-  cron.schedule("0 0 * * *", async () => {
-    const dailyBudgets = await db.getBudgetOfPeriod("DAY");
-    const now = new Date();
-    const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const endDate = new Date(startDate)
-    endDate.setDate(endDate.getDate() + 1)
-    for (const budget of dailyBudgets) {
-      await db.createBudget({
-        userId: budget.userId,
-        categoryId: budget.categoryId,
-        period: budget.period,
-        amount: budget.amount,
-        startDate: budget.startDate,
-        endDate: budget.endDate
-      })
+  cron.schedule("30 2 * * *", async () => {
+    try {
+      const dailyBudgets = await db.getBudgetOfPeriod("DAY");
+      console.log("cron running")
+      console.log(dailyBudgets)
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const endDate = new Date(startDate)
+      endDate.setDate(endDate.getDate() + 1)
+      console.log(startDate)
+
+      for (const budget of dailyBudgets) {
+        await db.createBudget({
+          userId: budget.userId,
+          categoryId: budget.categoryId,
+          period: budget.period,
+          amount: budget.amount,
+          startDate: startDate,
+          endDate: endDate
+        })
+
+        await db.cleanupOldBudgets(budget.userId, budget.categoryId, budget.period)
+
+      }
     }
+    catch (err) {
+      console.log(err)
+    }
+
   })
 
   cron.schedule("0 0 1 1 *", async () => {
-    const yearlyBudgets = await db.getBudgetOfPeriod("YEAR");
-    const now = new Date();
-    const startDate = new Date(now.getFullYear(), 0, 1);
-    const endDate = new Date(startDate)
-    endDate.setFullYear(endDate.getFullYear() + 1)
-    for (const budget of yearlyBudgets) {
-      await db.createBudget({
-        userId: budget.userId,
-        categoryId: budget.categoryId,
-        period: budget.period,
-        amount: budget.amount,
-        startDate: budget.startDate,
-        endDate: budget.endDate
-      })
+    try {
+      const yearlyBudgets = await db.getBudgetOfPeriod("YEAR");
+      const now = new Date();
+      const startDate = new Date(now.getFullYear(), 0, 1);
+      const endDate = new Date(startDate)
+      endDate.setFullYear(endDate.getFullYear() + 1)
+      for (const budget of yearlyBudgets) {
+        await db.createBudget({
+          userId: budget.userId,
+          categoryId: budget.categoryId,
+          period: budget.period,
+          amount: budget.amount,
+          startDate: startDate,
+          endDate: endDate
+        })
+
+        await db.cleanupOldBudgets(budget.userId, budget.categoryId, budget.period)
+
+      }
+    }
+    catch (err) {
+      console.log(err)
     }
   })
 
+
   cron.schedule("0 0 * * 1", async () => {
-    const weeklyBudgets = await db.getBudgetOfPeriod("WEEK");
-    const now = new Date();
-    const day = now.getDay();
-    const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-    const startDate = new Date(now.getFullYear(), now.getMonth(), diff);
-    const endDate = new Date(startDate)
-    endDate.setDate(endDate.getDate() + 7)
-    for (const budget of weeklyBudgets) {
-      await db.createBudget({
-        userId: budget.userId,
-        categoryId: budget.categoryId,
-        period: budget.period,
-        amount: budget.amount,
-        startDate: budget.startDate,
-        endDate: budget.endDate
-      });
+    try {
+      const weeklyBudgets = await db.getBudgetOfPeriod("WEEK");
+      const now = new Date();
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      const startDate = new Date(now.getFullYear(), now.getMonth(), diff);
+      const endDate = new Date(startDate)
+      endDate.setDate(endDate.getDate() + 7)
+      for (const budget of weeklyBudgets) {
+        await db.createBudget({
+          userId: budget.userId,
+          categoryId: budget.categoryId,
+          period: budget.period,
+          amount: budget.amount,
+          startDate: startDate,
+          endDate: endDate
+        });
+
+        await db.cleanupOldBudgets(budget.userId, budget.categoryId, budget.period)
+
+      }
     }
+    catch (err) {
+      console.log(err)
+    }
+
   });
 }

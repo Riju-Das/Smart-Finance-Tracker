@@ -23,23 +23,32 @@ import { Progress } from "@/components/ui/progress";
 function BudgetProgress() {
   interface BudgetFormType {
     categoryId: string;
-    period: "MONTH" | "DAY" | "YEAR";
+    period: string;
     amount: number;
   }
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<BudgetFormType>()
 
   const budgets = useBudgetStore((state) => state.budgets)
-  const [dialogOpen1, setDialogOpen1] = useState(false);
   const [currentPeriod, setCurrentPeriod] = useState<"MONTH" | "YEAR" | "DAY" | "WEEK">("MONTH")
   const categories = useCategoryStore((state) => state.categories)
   const fetchBudgets = useBudgetStore((state) => state.fetchBudgets)
 
+
+  async function handleDeleteBudget(id: string, categoryId: string, period: string) {
+    try {
+      await api.delete(`/budget/${id}?categoryId=${categoryId}&period=${period}`)
+      await fetchBudgets()
+    }
+    catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert(err?.response?.data?.message || "Failed deleting budgets")
+        console.log(err)
+      }
+      else {
+        alert("Failed deleting budgets")
+      }
+    }
+  }
 
 
   return (
@@ -63,10 +72,10 @@ function BudgetProgress() {
           (
             budgets
               .filter(budget => budget.budget.period === currentPeriod)
-              .map((budget) =>
+              .map((budget, idx) =>
               (
                 <div key={budget.budget.id}>
-                  <div className="mb-2">
+                  <div className="mb-2 flex justify-between">
                     <div className="gap-2">
                       <div>
                         <span className="inline-block mr-2 w-2 h-2 rounded-4xl " style={{ backgroundColor: budget.budget.category.color }}></span>
@@ -79,7 +88,11 @@ function BudgetProgress() {
                     </div>
 
                     <div>
-
+                      <span onClick={() => handleDeleteBudget(budget.budget.id, budget.budget.categoryId, budget.budget.period)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 xl:h-6 xl:w-6 text-gray-300 hover:text-red-500 transition-colors duration-150 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </span>
                     </div>
 
                   </div>
