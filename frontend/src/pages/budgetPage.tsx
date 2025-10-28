@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form"
 import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useCategoryStore } from '../store/categoryStore';
 import { useBudgetStore } from "@/store/budgetStore";
@@ -36,10 +36,20 @@ function BudgetPage() {
     formState: { errors },
   } = useForm<BudgetFormType>()
 
+  interface totalBudgetAnalytics {
+    TotalBudgetAmount: number
+    totalExpense: number
+    TotalBudgetPercentage: number
+  }
+
+  const [totalBudgetAnalytics, setTotalBudgetAnalytics] = useState<totalBudgetAnalytics>()
+  const [totalBudgetPeriod, setTotalBudgetPeriod] = useState<"MONTH" | "DAY" | "WEEK" | "YEAR">("MONTH")
+
   const budgets = useBudgetStore((state) => state.budgets)
   const [dialogOpen1, setDialogOpen1] = useState(false);
   const categories = useCategoryStore((state) => state.categories)
   const fetchBudgets = useBudgetStore((state) => state.fetchBudgets)
+
 
   async function onSubmit(data: BudgetFormType) {
     try {
@@ -64,6 +74,27 @@ function BudgetPage() {
     }
   }
 
+  async function fetchTotalBudgetPeriod() {
+    try {
+      const res = await api.get(`/totalBudgetAnalytics?period=${totalBudgetPeriod}`)
+      setTotalBudgetAnalytics(res.data)
+      console.log(res.data)
+    }
+    catch (err) {
+      console.log(err);
+      if (axios.isAxiosError(err)) {
+        alert(err?.response?.data?.message || "Failed fetching totalBudgetPeriod")
+      }
+      else {
+        alert("Failed fetching total Budget Period")
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchTotalBudgetPeriod()
+  }, [totalBudgetPeriod]);
+
   return (
     <div className="min-h-screen md:p-10 p-3 bg-gradient-to-br from-black via-gray-900 to-black ">
       <h1 className="2xl:text-5xl md:mb-8 xl:text-4xl text-3xl mb-5 font-semibold text-white">
@@ -72,7 +103,7 @@ function BudgetPage() {
       <Dialog open={dialogOpen1} onOpenChange={setDialogOpen1}>
 
         <DialogTrigger asChild>
-          <button className="px-8 py-2 rounded-full relative bg-gray-950 cursor-pointer text-white text-sm hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600" onClick={() => setDialogOpen1(true)}>
+          <button className="px-8 py-2 mb-8 rounded-full relative bg-gray-950 cursor-pointer text-white text-sm hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600" onClick={() => setDialogOpen1(true)}>
             <div className="absolute inset-x-0 h-px w-1/2 mx-auto   -top-px shadow-2xl  bg-gradient-to-r from-transparent via-teal-500 to-transparent" />
             <span className="relative z-20 text-center flex justify-center items-center">
               <span className='text-xl text-center'>+&nbsp; </span> Budget
@@ -149,8 +180,42 @@ function BudgetPage() {
 
       </Dialog>
 
+      <div>
+        <div >
+        <select name="interval" className="p-1 bg-gray-950 text-white  md:text-base text-xs" id="interval" onChange={e => setTotalBudgetPeriod(e.target.value as any)}>
+          <option value="MONTH" className="">Monthly</option>
+          <option value="DAY" className="">Daily</option>
+          <option value="YEAR" className="">Yearly</option>
+          <option value="WEEK" className="">Weekly</option>
+        </select>
+          
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Total Budget</div>
+            <div className="md:text-2xl text-xs  font-bold md:mt-2">₹{totalBudgetAnalytics?.TotalBudgetAmount || 0}</div>
+          </div>
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Total Spent</div>
+            <div className="md:text-2xl font-bold text-xs md:mt-2">₹{totalBudgetAnalytics?.totalExpense}</div>
+          </div>
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Remaining</div>
+            <div className="md:text-2xl text-xs font-bold md:mt-2">₹{
+              totalBudgetAnalytics ?
+                totalBudgetAnalytics.TotalBudgetAmount - totalBudgetAnalytics.totalExpense : 0
+            }
+            </div>
+          </div>
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Budget Used</div>
+            <div className="md:text-2xl text-xs font-bold md:mt-2">{totalBudgetAnalytics?.TotalBudgetPercentage}%</div>
+          </div>
+        </div>
+      </div>
+
       <div className="">
-        <BudgetProgress />
+        <BudgetProgress period={totalBudgetPeriod} showSelfPeriod={false}  />
       </div>
 
 

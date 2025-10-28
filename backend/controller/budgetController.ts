@@ -200,44 +200,24 @@ export async function totalBudgetAnalytics(req: AuthenticatedRequest, res: Respo
       return res.status(400).json({ message: "error fetching total budget analytics due to wrong period" });
     }
 
+    const budgets = await db.getBudgets(user.id, period)
+
     const result = await db.getTotalBudgetAmount(user.id, period);
 
     const TotalBudgetAmount = Number(result._sum.amount) || 0;
 
-    const now = new Date()
-    let startDate:Date;
-    let endDate:Date;
-    
-    if (period === "MONTH") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-      endDate = new Date(startDate)
-      endDate.setMonth(endDate.getMonth() + 1)
-    }
-    else if (period === "DAY") {
-      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      endDate = new Date(startDate)
-      endDate.setDate(endDate.getDate() + 1)
-    }
-    else if (period === "YEAR") {
-      startDate = new Date(now.getFullYear(), 0, 1);
-      endDate = new Date(startDate)
-      endDate.setFullYear(endDate.getFullYear() + 1)
-    }
-    else if (period === "WEEK") {
-      const day = now.getDay();
-      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
-      startDate = new Date(now.getFullYear(), now.getMonth(), diff);
-      endDate = new Date(startDate)
-      endDate.setDate(endDate.getDate() + 7)
-    }
-    else{
-      return res.status(400).json({message:"Error calulating start date and end date"})
+    let totalExpense = 0;
+
+    for (const budget of budgets) {
+      const totalExpenseResult = await db.getTotalExpenseOfBudget(
+        user.id,budget.startDate.toString() , 
+        budget.endDate.toString(), 
+        budget.categoryId);
+        
+      totalExpense += Number(totalExpenseResult._sum.amount) || 0
     }
 
-    const totalExpenseResult: any = await db.getTotalExpenseOfBudget(user.id, startDate.toString(), endDate.toString()) || { _sum: { amount: 0 } };
-    const totalExpense = Number(totalExpenseResult._sum.amount) || 0
-
-    const TotalBudgetPercentage =  TotalBudgetAmount > 0 ? Math.round((totalExpense / TotalBudgetAmount) * 100) : 0;
+    const TotalBudgetPercentage = TotalBudgetAmount > 0 ? Math.round((totalExpense / TotalBudgetAmount) * 100) : 0;
 
     res.status(200).json({
       TotalBudgetAmount,

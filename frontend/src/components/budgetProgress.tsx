@@ -20,7 +20,12 @@ import { useCategoryStore } from '../store/categoryStore';
 import { useBudgetStore } from "@/store/budgetStore";
 import { Progress } from "@/components/ui/progress";
 
-function BudgetProgress() {
+interface BudgetProgressProps {
+  period?: "MONTH" | "DAY" | "WEEK" | "YEAR";
+  showSelfPeriod: true | false
+}
+
+function BudgetProgress({ period, showSelfPeriod }: BudgetProgressProps) {
   interface BudgetFormType {
     categoryId: string;
     period: string;
@@ -52,77 +57,84 @@ function BudgetProgress() {
 
 
   return (
-    <div className='bg-gray-950/50 rounded-xl p-4 w-full  my-8 md:p-6 md:py-4 md:text-xl grid grid-cols-1 gap-6 border  border-gray-900 text-white shadow-xl'>
+    <div className='bg-gray-950/50 rounded-xl p-4 w-full   my-8 md:p-6 md:py-4 md:text-xl grid grid-cols-1 gap-6 border  border-gray-900 text-white shadow-xl'>
       <div className='md:text-2xl font-semibold flex w-full justify-between'>
         <span>
           Budget Progress
         </span>
       </div>
-      <div>
-        <select name="interval" className="p-1 md:text-base text-xs" id="interval" onChange={e => setCurrentPeriod(e.target.value as any)}>
-          <option value="MONTH" className="bg-black">Monthly</option>
-          <option value="DAY" className="bg-black">Daily</option>
-          <option value="YEAR" className="bg-black">Yearly</option>
-          <option value="WEEK" className="bg-black">Weekly</option>
-        </select>
-      </div>
       {
-        budgets
-          .filter(budget => budget.budget.period === currentPeriod).length > 0 ?
-          (
-            budgets
-              .filter(budget => budget.budget.period === currentPeriod)
-              .map((budget, idx) =>
-              (
-                <div key={budget.budget.id}>
-                  <div className="mb-2 flex justify-between">
-                    <div className="gap-2">
-                      <div>
-                        <span className="inline-block mr-2 w-2 h-2 rounded-4xl " style={{ backgroundColor: budget.budget.category.color }}></span>
-                        {budget.budget.category.name}
-                      </div>
-                      <div className="text-stone-400 text-base">
-                        ₹{budget.totalExpense} of ₹{budget.budget.amount}
-                      </div>
-
-                    </div>
-
-                    <div>
-                      <span onClick={() => handleDeleteBudget(budget.budget.id, budget.budget.categoryId, budget.budget.period)}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 xl:h-6 xl:w-6 text-gray-300 hover:text-red-500 transition-colors duration-150 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </span>
-                    </div>
-
-                  </div>
-
-                  <div className="">
-                    <div >
-                      {
-                        budget.budgetPercentage > 100 ? (
-                          <Progress value={100} className="w-full bg-gray-700 h-2" />
-                        ) : (
-                          <Progress value={budget.budgetPercentage || 0} className="w-full bg-black h-2" />
-                        )
-                      }
-
-                    </div>
-                    <div className="text-stone-400 my-2 text-base">
-                      {budget.budgetPercentage}% used
-                    </div>
-
-                  </div>
-                </div>
-              )
-              )
-          ) : (
-            <div className="text-center">
-              No budget created
-            </div>
-          )
-
+        showSelfPeriod === true && (
+          <div>
+            <select name="interval" className="p-1 md:text-base text-xs" id="interval" onChange={e => setCurrentPeriod(e.target.value as any)}>
+              <option value="MONTH" className="bg-black">Monthly</option>
+              <option value="DAY" className="bg-black">Daily</option>
+              <option value="YEAR" className="bg-black">Yearly</option>
+              <option value="WEEK" className="bg-black">Weekly</option>
+            </select>
+          </div >
+        )
       }
+      <div>
+        {
+          budgets
+            .filter(budget => budget.budget.period === currentPeriod).length > 0 ?
+            (
+              budgets
+                .filter(budget => budget.budget.period === (showSelfPeriod === true ? currentPeriod : period))
+                .map((budget, idx) =>
+                (
+                  <div key={budget.budget.id}>
+                    <div className="mb-2 flex justify-between">
+                      <div className="gap-2">
+                        <div>
+                          <span className="inline-block mr-2 w-2 h-2 rounded-4xl " style={{ backgroundColor: budget.budget.category.color }}></span>
+                          {budget.budget.category.name}
+                        </div>
+                        <div className="text-stone-400 text-base">
+                          ₹{budget.totalExpense} of ₹{budget.budget.amount}
+                        </div>
+
+                      </div>
+
+                      <div>
+                        <span onClick={() => handleDeleteBudget(budget.budget.id, budget.budget.categoryId, budget.budget.period)}>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 xl:h-6 xl:w-6 text-gray-300 hover:text-red-500 transition-colors duration-150 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </span>
+                      </div>
+
+                    </div>
+
+                    <div className="">
+                      <div >
+                        {
+                          budget.budgetPercentage > 100 ? (
+                            <Progress value={100} className="w-full bg-gray-700 h-2" />
+                          ) : (
+                            <Progress value={budget.budgetPercentage || 0} className="w-full bg-black h-2" />
+                          )
+                        }
+
+                      </div>
+                      <div className="text-stone-400 my-2 text-base">
+                        {budget.budgetPercentage}% used
+                      </div>
+
+                    </div>
+                  </div>
+                )
+                )
+            ) : (
+              <div className="text-center">
+                No budget created
+              </div>
+            )
+
+        }
+      </div>
+
 
       <div>
 
