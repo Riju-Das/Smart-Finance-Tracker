@@ -20,7 +20,7 @@ export async function getBudgets(req: AuthenticatedRequest, res: Response) {
     const budgets = await Promise.all(
       result.map(async (budget) => {
 
-        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(budget.userId, budget.categoryId, budget.startDate.toString(), budget.endDate.toString()) || { _sum: { amount: 0 } };
+        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(budget.userId, budget.startDate.toString(), budget.endDate.toString(), budget.categoryId) || { _sum: { amount: 0 } };
         const total = Number(totalExpenseResult._sum.amount) || 0
         const budgetPercentage = budget.amount > 0 ? Math.round((total / budget.amount) * 100) : 0;
         return {
@@ -189,6 +189,69 @@ export async function deleteBudget(req: AuthenticatedRequest, res: Response) {
 }
 
 
+export async function totalBudgetAnalytics(req: AuthenticatedRequest, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) return res.status(400).json({ message: "Unauthorized" });
+
+    const { period } = req.query
+
+    if (period !== "MONTH" && period !== "DAY" && period !== "WEEK" && period !== "YEAR") {
+      return res.status(400).json({ message: "error fetching total budget analytics due to wrong period" });
+    }
+
+    const result = await db.getTotalBudgetAmount(user.id, period);
+
+    const TotalBudgetAmount = Number(result._sum.amount) || 0;
+
+    const now = new Date()
+    let startDate:Date;
+    let endDate:Date;
+    
+    if (period === "MONTH") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      endDate = new Date(startDate)
+      endDate.setMonth(endDate.getMonth() + 1)
+    }
+    else if (period === "DAY") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      endDate = new Date(startDate)
+      endDate.setDate(endDate.getDate() + 1)
+    }
+    else if (period === "YEAR") {
+      startDate = new Date(now.getFullYear(), 0, 1);
+      endDate = new Date(startDate)
+      endDate.setFullYear(endDate.getFullYear() + 1)
+    }
+    else if (period === "WEEK") {
+      const day = now.getDay();
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+      startDate = new Date(now.getFullYear(), now.getMonth(), diff);
+      endDate = new Date(startDate)
+      endDate.setDate(endDate.getDate() + 7)
+    }
+    else{
+      return res.status(400).json({message:"Error calulating start date and end date"})
+    }
+
+    const totalExpenseResult: any = await db.getTotalExpenseOfBudget(user.id, startDate.toString(), endDate.toString()) || { _sum: { amount: 0 } };
+    const totalExpense = Number(totalExpenseResult._sum.amount) || 0
+
+    const TotalBudgetPercentage =  TotalBudgetAmount > 0 ? Math.round((totalExpense / TotalBudgetAmount) * 100) : 0;
+
+    res.status(200).json({
+      TotalBudgetAmount,
+      totalExpense,
+      TotalBudgetPercentage
+    })
+  }
+  catch (err) {
+    return res.status(500).json({ message: "Error fetching total budget analytics" })
+  }
+}
+
+
+
 
 
 
@@ -307,3 +370,7 @@ export function startBudgetCrons() {
 
   });
 }
+
+
+
+

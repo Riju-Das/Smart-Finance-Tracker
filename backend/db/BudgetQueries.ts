@@ -38,10 +38,11 @@ async function createBudget(budget: Budget) {
   })
 }
 
-async function getBudgets(userId: string) {
+async function getBudgets(userId: string, period?:BudgetPeriod) {
   return await prisma.budget.findMany({
     where: {
       userId: userId,
+      period: period,
       active: true
     },
     orderBy: {
@@ -49,6 +50,19 @@ async function getBudgets(userId: string) {
     },
     include: {
       category: true
+    }
+  })
+}
+
+async function getTotalBudgetAmount(userId: string, period?:BudgetPeriod){
+  return await prisma.budget.aggregate({
+    _sum: {
+      amount: true
+    },
+    where: {
+      userId: userId,
+      period: period,
+      active: true
     }
   })
 }
@@ -102,9 +116,9 @@ async function getUserIdByBudgetId(id: string) {
 
 async function getTotalExpenseOfBudget(
   userId: string,
-  categoryId: string,
   startDate: string,
-  endDate: string
+  endDate: string,
+  categoryId?: string
 
 ) {
   return await prisma.transaction.aggregate({
@@ -149,6 +163,8 @@ async function cleanupOldBudgets(userId: string, categoryId: string, period: Bud
   }
 }
 
+
+
 export {
   createBudget,
   updateBudget,
@@ -157,5 +173,6 @@ export {
   getUserIdByBudgetId,
   getTotalExpenseOfBudget,
   getBudgetOfPeriod,
-  cleanupOldBudgets
+  cleanupOldBudgets,
+  getTotalBudgetAmount
 }

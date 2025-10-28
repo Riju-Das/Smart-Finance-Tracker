@@ -33,5 +33,6 @@ route.get("/budget", authenticateToken, BudgetController.getBudgets )
 route.post("/budget" , authenticateToken , BudgetController.createBudget);
 route.put("/budget/:id", authenticateToken, BudgetController.updateBudget)
 route.delete("/budget/:id", authenticateToken, BudgetController.deleteBudget)
+route.get("/totalBudgetAnalytics" , authenticateToken , BudgetController.totalBudgetAnalytics)
 
 export default route
