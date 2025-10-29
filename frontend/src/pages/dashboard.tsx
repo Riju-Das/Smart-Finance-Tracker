@@ -1,6 +1,13 @@
 import { useAuthStore } from '../store/authStore'
 import { useTransactionStore } from '../store/transactionStore'
+import { useEffect } from 'react'
 function Dashboard() {
+
+  useEffect(() => {
+    document.title = 'Dashboard - Budget Buddy';
+
+  }, []);
+
   const user = useAuthStore((state) => state.user)
   const transactionSummary = useTransactionStore((state) => state.transactionSummary)
 

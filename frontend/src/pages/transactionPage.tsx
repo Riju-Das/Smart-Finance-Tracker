@@ -17,12 +17,18 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AllTransactions from "../components/AllTransactions";
 import axios from "axios";
 import { useBudgetStore } from '@/store/budgetStore';
 
+
 function TransactionPage() {
+
+  useEffect(() => {
+    document.title = 'Transactions - Budget Buddy';
+
+  }, []); 
 
 
   const fetchTransactionSummary = useTransactionStore((state) => state.fetchTransactionSummary)

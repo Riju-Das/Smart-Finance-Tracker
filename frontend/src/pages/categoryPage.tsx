@@ -16,11 +16,16 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form"
 import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import axios from 'axios';
 import { useBudgetStore } from '@/store/budgetStore';
 
 function CategoryPage() {
+
+  useEffect(() => {
+    document.title = 'Categories - Budget Buddy';
+
+  }, []);
 
   interface CategoryFormType {
     category: string;
@@ -36,7 +41,7 @@ function CategoryPage() {
   const [searchCategory, setSearchCategory] = useState<string>("")
   const transactionSummary = useTransactionStore((state) => state.transactionSummary)
 
-  const fetchBudgets = useBudgetStore((state)=>state.fetchBudgets)
+  const fetchBudgets = useBudgetStore((state) => state.fetchBudgets)
 
   const {
     register,
@@ -230,8 +235,8 @@ function CategoryPage() {
                             setDialogOpen1(false);
                             setEditDialogIndex(idx);
                             reset2({
-                              category:category.name,
-                              color:category.color
+                              category: category.name,
+                              color: category.color
                             })
                           }}>
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 xl:h-6 xl:w-6 text-gray-300 hover:text-white transition-colors duration-150 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">

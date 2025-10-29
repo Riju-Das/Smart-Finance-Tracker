@@ -23,6 +23,11 @@ import BudgetProgress from "@/components/budgetProgress";
 
 function BudgetPage() {
 
+  useEffect(() => {
+    document.title = 'Budget Progress - Budget Buddy';
+
+  }, []); 
+
   interface BudgetFormType {
     categoryId: string;
     period: "MONTH" | "DAY" | "YEAR";

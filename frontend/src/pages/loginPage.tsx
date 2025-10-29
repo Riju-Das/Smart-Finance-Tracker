@@ -6,8 +6,15 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import { useAuthStore } from "../store/authStore";
 import axios from "axios";
+import { useEffect } from 'react'
 
 function LoginPage() {
+
+  useEffect(() => {
+    document.title = 'Login - Budget Buddy';
+
+  }, []); 
+
   const navigate = useNavigate()
 
   const setUser = useAuthStore((state) => state.setUser)

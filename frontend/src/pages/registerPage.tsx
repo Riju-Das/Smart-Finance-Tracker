@@ -5,8 +5,14 @@ import { useForm } from "react-hook-form"
 import { Link, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import axios from "axios";
+import { useEffect } from 'react'
 
 function RegisterPage() {
+
+  useEffect(() => {
+    document.title = 'Registration - Budget Buddy';
+
+  }, []); 
 
   const navigate = useNavigate()
 
