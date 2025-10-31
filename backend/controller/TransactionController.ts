@@ -259,7 +259,7 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
   }
 
   
-  const revisedData= chartData.slice(-7)
+  const revisedData= chartData.slice(-10)
 
   return res.status(200).json({interval, data:revisedData})
 

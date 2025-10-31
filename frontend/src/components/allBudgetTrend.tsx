@@ -33,7 +33,7 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
 
   const budgets = useBudgetStore((state) => state.budgets)
 
-  const [currentPeriod, setCurrentPeriod] = useState<"MONTH" | "DAY" | "WEEK" | "YEAR">("MONTH")
+  const [currentPeriod, setCurrentPeriod] = useState<"MONTH" | "DAY" | "WEEK" | "YEAR">("DAY")
   const [categoryId, setCategoryId] = useState<string>(budgets
     .filter((budget) => {
       if (showSelfPeriod === true) {
@@ -71,7 +71,7 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
 
 
   useEffect(() => {
-    const revbudget = budgets.filter((budget) => budget.budget.categoryId === categoryId && budget.budget.period === (currentPeriod || period))
+    const revbudget = budgets.filter((budget) => budget.budget.categoryId === categoryId && budget.budget.period === (showSelfPeriod === true ? currentPeriod : period))
     if (revbudget.length === 0) {
       setCategoryId(budgets
         .filter((budget) => {
@@ -96,14 +96,14 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
   return (
     <div className="flex flex-col border-1 border-white/10  md:p-5  p-2 gap-5 rounded-2xl  2xl:h-140 md:h-100 h-80 bg-gray-950">
       <div className=" text-center md:text-start md:text-3xl text-white font-bold ">
-        Transaction Trends
+        Budget Trends
       </div>
       <div className="">
         {
           showSelfPeriod === true && (
             <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl mx-3 md:text-base text-white text-xs" id="interval" onChange={e => setCurrentPeriod(e.target.value as any)}>
-              <option value="MONTH" className="bg-black">Monthly</option>
               <option value="DAY" className="bg-black">Daily</option>
+              <option value="MONTH" className="bg-black">Monthly</option>
               <option value="YEAR" className="bg-black">Yearly</option>
               <option value="WEEK" className="bg-black">Weekly</option>
             </select>

@@ -50,7 +50,7 @@ function BudgetPage() {
   }
 
   const [totalBudgetAnalytics, setTotalBudgetAnalytics] = useState<totalBudgetAnalytics>()
-  const [totalBudgetPeriod, setTotalBudgetPeriod] = useState<"MONTH" | "DAY" | "WEEK" | "YEAR">("MONTH")
+  const [totalBudgetPeriod, setTotalBudgetPeriod] = useState<"MONTH" | "DAY" | "WEEK" | "YEAR">("DAY")
 
   const budgets = useBudgetStore((state) => state.budgets)
   const [dialogOpen1, setDialogOpen1] = useState(false);
@@ -189,8 +189,8 @@ function BudgetPage() {
       <div>
         <div >
           <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl bg-gray-950  text-white  md:text-base text-xs" id="interval" onChange={e => setTotalBudgetPeriod(e.target.value as any)}>
+          <option value="DAY" className="">Daily</option>
             <option value="MONTH" className="">Monthly</option>
-            <option value="DAY" className="">Daily</option>
             <option value="YEAR" className="">Yearly</option>
             <option value="WEEK" className="">Weekly</option>
           </select>
