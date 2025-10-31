@@ -58,11 +58,11 @@ async function getAllBudgets(userId: string, categoryId:string , period:BudgetPe
   return await prisma.budget.findMany({
     where: {
       userId: userId,
-      categoryId:categoryId,
-      period:period
+      period:period,
+      categoryId:categoryId
     },
     orderBy: {
-      startDate: "desc"
+      startDate: "asc"
     },
     include: {
       category: true

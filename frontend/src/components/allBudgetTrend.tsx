@@ -26,7 +26,7 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
     }
     totalExpense: number;
     budgetPercentage: number;
-    date:string
+    date: string
   }
 
 
@@ -34,14 +34,32 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
   const budgets = useBudgetStore((state) => state.budgets)
 
   const [currentPeriod, setCurrentPeriod] = useState<"MONTH" | "DAY" | "WEEK" | "YEAR">("MONTH")
-  const [categoryId, setCategoryId] = useState<string>("")
+  const [categoryId, setCategoryId] = useState<string>(budgets
+    .filter((budget) => {
+      if (showSelfPeriod === true) {
+        return budget.budget.period === currentPeriod
+      }
+      else {
+        return budget.budget.period === period
+      }
+    }
+    )[0]?.budget.categoryId ?? "")
   const [filteredBudget, setFilteredBudget] = useState<allBudgets[]>()
 
   async function fetchAllBudgets() {
     try {
-      const res = await api.get("/budget/all")
-      setAllBudgets(res.data)
-      console.log(res.data)
+      if (showSelfPeriod === true) {
+        console.log(categoryId)
+        const res = await api.get(`/budget/all?period=${currentPeriod}&categoryId=${categoryId}`)
+        setFilteredBudget(res.data)
+
+      }
+      else if (showSelfPeriod === false) {
+        console.log(categoryId)
+        const res = await api.get(`/budget/all?period=${period}&categoryId=${categoryId}`)
+        console.log(res.data)
+        setFilteredBudget(res.data)
+      }
     }
     catch (err) {
       console.log(err)
@@ -51,8 +69,27 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
     }
   }
 
+
   useEffect(() => {
-    fetchAllBudgets()
+    const revbudget = budgets.filter((budget) => budget.budget.categoryId === categoryId && budget.budget.period === (currentPeriod || period))
+    if (revbudget.length === 0) {
+      setCategoryId(budgets
+        .filter((budget) => {
+          if (showSelfPeriod === true) {
+            return budget.budget.period === currentPeriod
+          }
+          else {
+            return budget.budget.period === period
+          }
+        }
+        )[0]?.budget.categoryId ?? "")
+    }
+  }, [period, currentPeriod]);
+
+  useEffect(() => {
+    if (categoryId) {
+      fetchAllBudgets()
+    }
   }, [categoryId, currentPeriod, period]);
 
 
@@ -73,7 +110,8 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
           )
         }
 
-        <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl text-white md:text-base text-xs" id="interval" onChange={(e) => setCategoryId(e.target.value)} >
+        <select name="categorySelector" value={categoryId} className="p-1 px-3 border-1 border-white/10 rounded-2xl text-white md:text-base text-xs" id="categorySelector"
+          onChange={(e) => setCategoryId(e.target.value)} >
           {
             budgets.map((budget) => ((showSelfPeriod === true && currentPeriod === budget.budget.period) || (showSelfPeriod === false && period === budget.budget.period)) && (
               <option value={budget.budget.category.id} key={budget.budget.id} className="bg-black">{budget.budget.category.name}</option>
@@ -91,13 +129,13 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
                 strokeOpacity={0.3}
               />
               <XAxis
-                dataKey="budget.startDate"
+                dataKey="date"
                 stroke="#9ca3af"
                 tick={{ fill: '#9ca3af', fontSize: 12 }}
                 axisLine={{ stroke: '#4b5563' }}
               />
               <YAxis
-    
+
                 stroke="#9ca3af"
                 tick={{ fill: '#9ca3af', fontSize: 12 }}
                 axisLine={{ stroke: '#4b5563' }}
@@ -105,7 +143,7 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
               <Tooltip />
               <Legend />
               <Line type="linear" dataKey="budget.amount" stroke="#00e571" strokeWidth={1} name="amount" />
-              <Line type="linear" dataKey="totalExpense" stroke="#00e571" strokeWidth={1} name="Total Expense" />
+              <Line type="linear" dataKey="totalExpense" stroke="#dc2626" strokeWidth={1} name="Total Expense" />
             </LineChart>
           </ResponsiveContainer>
         ) : (

@@ -85,7 +85,6 @@ function BudgetPage() {
     try {
       const res = await api.get(`/totalBudgetAnalytics?period=${totalBudgetPeriod}`)
       setTotalBudgetAnalytics(res.data)
-      console.log(res.data)
     }
     catch (err) {
       console.log(err);
