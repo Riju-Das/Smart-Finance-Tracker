@@ -142,8 +142,8 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
               />
               <Tooltip />
               <Legend />
-              <Line type="linear" dataKey="budget.amount" stroke="#00e571" strokeWidth={1} name="amount" />
-              <Line type="linear" dataKey="totalExpense" stroke="#dc2626" strokeWidth={1} name="Total Expense" />
+              <Line type="monotone" dataKey="budget.amount" stroke="#00e571" strokeWidth={1} name="amount" />
+              <Line type="monotone" dataKey="totalExpense" stroke="#dc2626" strokeWidth={1} name="Total Expense" />
             </LineChart>
           </ResponsiveContainer>
         ) : (

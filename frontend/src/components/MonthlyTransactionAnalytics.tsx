@@ -63,9 +63,9 @@ function MonthlyTransactionAnalytics() {
           />
           <Tooltip />
           <Legend />
-          <Line type="linear" dataKey="income" stroke="#00e571" strokeWidth={1} name="Income" />
-          <Line type="linear" dataKey="expense" stroke="#ff4d4f" strokeWidth={1} name="Expense" />
-          <Line type="linear" dataKey="netAmount" stroke="#8884d8" strokeWidth={1} name="Savings" />
+          <Line type="monotone" dataKey="income" stroke="#00e571" strokeWidth={1} name="Income" />
+          <Line type="monotone" dataKey="expense" stroke="#ff4d4f" strokeWidth={1} name="Expense" />
+          <Line type="monotone" dataKey="netAmount" stroke="#8884d8" strokeWidth={1} name="Savings" />
         </LineChart>
       </ResponsiveContainer>
     </div>
