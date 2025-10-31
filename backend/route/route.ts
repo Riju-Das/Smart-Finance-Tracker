@@ -30,9 +30,11 @@ route.get("/transactions/expenseByCategory" , authenticateToken , TransactionCon
 route.get("/transactions/timeseries" , authenticateToken , TransactionController.getTransactionTimeseries)
 
 route.get("/budget", authenticateToken, BudgetController.getBudgets )
+route.get("/budget/all", authenticateToken, BudgetController.getAllBudgets)
+route.get("/totalBudgetAnalytics" , authenticateToken , BudgetController.totalBudgetAnalytics)
 route.post("/budget" , authenticateToken , BudgetController.createBudget);
 route.put("/budget/:id", authenticateToken, BudgetController.updateBudget)
 route.delete("/budget/:id", authenticateToken, BudgetController.deleteBudget)
-route.get("/totalBudgetAnalytics" , authenticateToken , BudgetController.totalBudgetAnalytics)
+
 
 export default route

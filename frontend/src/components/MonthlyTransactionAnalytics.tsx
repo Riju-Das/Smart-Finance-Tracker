@@ -37,7 +37,7 @@ function MonthlyTransactionAnalytics() {
         Transaction Trends
       </div>
       <div>
-        <select name="interval" className="p-1 md:text-base text-xs" id="interval" onChange={e => setInterval(e.target.value as any)}>
+        <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl md:text-base text-xs" id="interval" onChange={e => setInterval(e.target.value as any)}>
           <option value="month" className="bg-black">Monthly</option>
           <option value="day" className="bg-black">Daily</option>
           <option value="year" className="bg-black">Yearly</option>
@@ -63,9 +63,9 @@ function MonthlyTransactionAnalytics() {
           />
           <Tooltip />
           <Legend />
-          <Line type="monotone" dataKey="income" stroke="#00e571" strokeWidth={2} name="Income" />
-          <Line type="monotone" dataKey="expense" stroke="#ff4d4f" strokeWidth={2} name="Expense" />
-          <Line type="monotone" dataKey="netAmount" stroke="#8884d8" strokeWidth={2} name="Savings" />
+          <Line type="monotone" dataKey="income" stroke="#00e571" strokeWidth={1} name="Income" />
+          <Line type="monotone" dataKey="expense" stroke="#ff4d4f" strokeWidth={1} name="Expense" />
+          <Line type="monotone" dataKey="netAmount" stroke="#8884d8" strokeWidth={1} name="Savings" />
         </LineChart>
       </ResponsiveContainer>
     </div>

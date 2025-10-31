@@ -2,6 +2,7 @@ import * as db from "../db/BudgetQueries"
 import { Request, Response } from "express"
 import * as jwt from "jsonwebtoken"
 import cron from "node-cron"
+import { format } from "date-fns";
 
 
 interface AuthenticatedRequest extends Request {
@@ -37,7 +38,6 @@ export async function getBudgets(req: AuthenticatedRequest, res: Response) {
     return res.status(500).json({ message: "Error fetching budgets" })
   }
 }
-
 
 export async function createBudget(req: AuthenticatedRequest, res: Response) {
   try {
@@ -100,7 +100,6 @@ export async function updateBudget(req: AuthenticatedRequest, res: Response) {
     const { id } = req.params;
 
     if (!id) return res.status(400).json({ message: "invalid id" })
-
     const { categoryId, period, amount } = req.body
 
     if (!categoryId) return res.status(400).json({ message: "categoryId is required" });
@@ -210,10 +209,10 @@ export async function totalBudgetAnalytics(req: AuthenticatedRequest, res: Respo
 
     for (const budget of budgets) {
       const totalExpenseResult = await db.getTotalExpenseOfBudget(
-        user.id,budget.startDate.toString() , 
-        budget.endDate.toString(), 
+        user.id, budget.startDate.toString(),
+        budget.endDate.toString(),
         budget.categoryId);
-        
+
       totalExpense += Number(totalExpenseResult._sum.amount) || 0
     }
 
@@ -233,6 +232,71 @@ export async function totalBudgetAnalytics(req: AuthenticatedRequest, res: Respo
 
 
 
+export async function getAllBudgets(req: AuthenticatedRequest, res: Response) {
+  try {
+    const user = req.user;
+    if (!user) return res.status(400).json({ message: "Unauthorized" });
+
+
+    const { period, categoryId } = req.query
+
+    if (period !== "MONTH" && period !== "DAY" && period !== "WEEK" && period !== "YEAR") {
+      return res.status(400).json({ message: "error fetching total budget analytics due to wrong period" });
+    }
+
+    if (!categoryId || typeof categoryId !== "string") {
+      return res.status(400).json({ message: "error fetching category for the analytics" });
+    }
+
+    const result = await db.getAllBudgets(user.id, categoryId, period);
+
+    const budgets = await Promise.all(
+      result.map(async (budget) => {
+
+        const totalExpenseResult: any = await db.getTotalExpenseOfBudget(
+          budget.userId,
+          budget.startDate.toString(),
+          budget.endDate.toString(),
+          budget.categoryId
+        ) || { _sum: { amount: 0 } };
+
+        const total = Number(totalExpenseResult._sum.amount) || 0
+        const budgetPercentage = budget.amount > 0 ? Math.round((total / budget.amount) * 100) : 0;
+
+        let date:string;
+        const startDate = new Date(budget.startDate);
+
+        switch (period) {
+          case "DAY":
+            date = format(startDate, "MMM dd, yyyy");
+            break;
+          case "WEEK":
+            const endDate = new Date(budget.endDate);
+            date = `${format(startDate, "MMM dd")} - ${format(endDate, "MMM dd")}`
+            break;
+          case "YEAR":
+            date = format(startDate, "yyyy");
+            break;
+          case "MONTH":
+            date = format(startDate, "MMM")
+            break;
+        }
+
+        return {
+          budget,
+          totalExpense: total,
+          budgetPercentage,
+          date
+        }
+      })
+    )
+
+    return res.status(200).json(budgets)
+  }
+  catch (err) {
+    return res.status(500).json({ message: "Error fetching All the budgets" })
+  }
+}
 
 
 export function startBudgetCrons() {
@@ -263,7 +327,7 @@ export function startBudgetCrons() {
     }
   })
 
-  cron.schedule("30 2 * * *", async () => {
+  cron.schedule("46 1 * * *", async () => {
     try {
       const dailyBudgets = await db.getBudgetOfPeriod("DAY");
       console.log("cron running")
@@ -350,7 +414,3 @@ export function startBudgetCrons() {
 
   });
 }
-
-
-
-

@@ -26,13 +26,9 @@ interface BudgetProgressProps {
 }
 
 function BudgetProgress({ period, showSelfPeriod }: BudgetProgressProps) {
-  interface BudgetFormType {
-    categoryId: string;
-    period: string;
-    amount: number;
-  }
 
 
+  
   const budgets = useBudgetStore((state) => state.budgets)
   const [currentPeriod, setCurrentPeriod] = useState<"MONTH" | "YEAR" | "DAY" | "WEEK">("MONTH")
   const categories = useCategoryStore((state) => state.categories)
@@ -57,7 +53,7 @@ function BudgetProgress({ period, showSelfPeriod }: BudgetProgressProps) {
 
 
   return (
-    <div className='bg-gray-950/50 rounded-xl p-4 w-full   my-8 md:p-6 md:py-4 md:text-xl grid grid-cols-1 gap-6 border  border-gray-900 text-white shadow-xl'>
+    <div className='bg-gray-950/50 rounded-xl p-4 w-full    md:p-6 md:py-4 md:text-xl grid grid-cols-1 gap-6 border  border-gray-900 text-white shadow-xl'>
       <div className='md:text-2xl font-semibold flex w-full justify-between'>
         <span>
           Budget Progress

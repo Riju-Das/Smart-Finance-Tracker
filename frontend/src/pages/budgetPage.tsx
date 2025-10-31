@@ -19,6 +19,8 @@ import axios from 'axios';
 import { useCategoryStore } from '../store/categoryStore';
 import { useBudgetStore } from "@/store/budgetStore";
 
+import AllBudgetTrend from "@/components/allBudgetTrend";
+
 import BudgetProgress from "@/components/budgetProgress";
 
 function BudgetPage() {
@@ -26,7 +28,7 @@ function BudgetPage() {
   useEffect(() => {
     document.title = 'Budget Progress - Budget Buddy';
 
-  }, []); 
+  }, []);
 
   interface BudgetFormType {
     categoryId: string;
@@ -187,13 +189,13 @@ function BudgetPage() {
 
       <div>
         <div >
-        <select name="interval" className="p-1 bg-gray-950 text-white  md:text-base text-xs" id="interval" onChange={e => setTotalBudgetPeriod(e.target.value as any)}>
-          <option value="MONTH" className="">Monthly</option>
-          <option value="DAY" className="">Daily</option>
-          <option value="YEAR" className="">Yearly</option>
-          <option value="WEEK" className="">Weekly</option>
-        </select>
-          
+          <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl bg-gray-950  text-white  md:text-base text-xs" id="interval" onChange={e => setTotalBudgetPeriod(e.target.value as any)}>
+            <option value="MONTH" className="">Monthly</option>
+            <option value="DAY" className="">Daily</option>
+            <option value="YEAR" className="">Yearly</option>
+            <option value="WEEK" className="">Weekly</option>
+          </select>
+
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
           <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
@@ -219,9 +221,15 @@ function BudgetPage() {
         </div>
       </div>
 
-      <div className="">
-        <BudgetProgress period={totalBudgetPeriod} showSelfPeriod={false}  />
+      <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
+        <div>
+          <BudgetProgress period={totalBudgetPeriod} showSelfPeriod={false} />
+        </div>
+        <div>
+          <AllBudgetTrend period={totalBudgetPeriod} showSelfPeriod={false} />
+        </div>
       </div>
+
 
 
     </div>
