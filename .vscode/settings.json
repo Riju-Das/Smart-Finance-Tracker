@@ -1,7 +1,0 @@
-{
-  "editor.experimentalGpuAcceleration": "off",
-  "terminal.integrated.gpuAcceleration": "auto",
-  "github.copilot.chat.languageContext.fix.typescript.enabled": true,
-  "editor.experimental.preferTreeSitter.typescript": false,
-  "editor.codeLens": false
-}

@@ -25,6 +25,7 @@ model User {
   category      Category[]
   refreshTokens String[]      @default([])
   budgets       Budget[]
+  goals         Goal[]
 }
 
 model Transaction {
@@ -77,4 +78,35 @@ enum BudgetPeriod {
   YEAR
   WEEK
   DAY
+}
+
+model Goal {
+  id            String         @id @default(uuid())
+  userId        String
+  user          User           @relation(fields: [userId], references: [id])
+  name          String
+  description   String
+  targetAmount  Float
+  currentAmount Float          @default(0)
+  startDate     DateTime
+  deadline      DateTime
+  status        GoalStatus
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  contributions Contribution[]
+}
+
+model Contribution {
+  id     String   @id @default(uuid())
+  goalId String
+  goal   Goal     @relation(fields: [goalId], references: [id])
+  amount Float
+  date   DateTime @default(now())
+}
+
+enum GoalStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
 }

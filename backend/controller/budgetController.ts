@@ -263,7 +263,7 @@ export async function getAllBudgets(req: AuthenticatedRequest, res: Response) {
         const total = Number(totalExpenseResult._sum.amount) || 0
         const budgetPercentage = budget.amount > 0 ? Math.round((total / budget.amount) * 100) : 0;
 
-        let date:string;
+        let date: string;
         const startDate = new Date(budget.startDate);
 
         switch (period) {
@@ -328,7 +328,7 @@ export function startBudgetCrons() {
     }
   })
 
-  cron.schedule("40 1 * * *", async () => {
+  cron.schedule("25 1 * * *", async () => {
     try {
       const dailyBudgets = await db.getBudgetOfPeriod("DAY");
       console.log("cron running")
