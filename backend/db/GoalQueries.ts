@@ -12,8 +12,8 @@ interface goals {
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE"
 }
 
-interface contribution{
-  goalId:string,
+interface contribution {
+  goalId: string,
   amount: number,
   date: Date
 }
@@ -23,12 +23,12 @@ export async function createGoals(
   name: string,
   description: string,
   targetAmount: number,
-  startDate:Date,
+  startDate: Date,
   deadline: Date,
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE"
 ) {
   return await prisma.goal.create({
-    data:{
+    data: {
       userId,
       name,
       description,
@@ -41,34 +41,54 @@ export async function createGoals(
 }
 
 export async function createContribution(
-  goalId:string,
+  goalId: string,
   amount: number,
-  date: Date
-){
-  return await prisma.contribution.create({
-    data:{
-      goalId,
-      amount,
-      date
+
+) {
+  return await prisma.$transaction(async (tx)=>{
+    const newContribution = await tx.contribution.create({
+      data: {
+        goalId,
+        amount,
+      }
+    });
+    const totalContribution = await tx.contribution.aggregate({
+      where: {
+        goalId: goalId
+      },
+      _sum: {
+        amount: true
+      }
+    });
+  
+    if (totalContribution._sum.amount) {
+      await tx.goal.update({
+        where: {
+          id: goalId
+        },
+        data: {
+          currentAmount: totalContribution._sum.amount
+        }
+      })
     }
+    return newContribution;
   })
 }
 
-export async function getGoals(userId:string){
+export async function getGoals(userId: string) {
   return await prisma.goal.findMany({
-    where:{
-      userId:userId
+    where: {
+      userId: userId
     }
   })
 }
 
-export async function totalContributionOfAGoal(goalId:string){
-  return await prisma.contribution.aggregate({
-    where:{
-      goalId:goalId
-    },
-    _sum:{
-      amount:true
+export async function getGoalByGoalId(id: string) {
+  return await prisma.goal.findUnique({
+    where: {
+      id: id
     }
   })
 }
+
+
