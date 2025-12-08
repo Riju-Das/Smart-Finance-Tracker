@@ -1,22 +1,9 @@
 import { PrismaClient } from "@prisma/client"
 
+
 const prisma = new PrismaClient()
 
-interface goals {
-  userId: string
-  name: string
-  description: string
-  targetAmount: number
-  startDate: Date
-  deadline: Date
-  status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE"
-}
 
-interface contribution {
-  goalId: string,
-  amount: number,
-  date: Date
-}
 
 export async function createGoals(
   userId: string,
@@ -36,6 +23,43 @@ export async function createGoals(
       startDate,
       deadline,
       status
+    }
+  })
+}
+
+export async function updateGoals(
+  userId: string,
+  goalId:string,
+  name?: string,
+  description?: string,
+  targetAmount?: number,
+  startDate?: Date,
+  deadline?: Date,
+  status?: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE"
+) {
+  return await prisma.goal.update({
+    where:{
+      userId:userId,
+      id: goalId
+    },
+    data: {
+      name,
+      description,
+      targetAmount,
+      startDate,
+      deadline,
+      status
+    }
+  })
+}
+
+export async function updateGoalStatus(goalId:string, status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE"){
+  return await prisma.goal.update({
+    where:{
+      id:goalId
+    },
+    data:{
+      status:status
     }
   })
 }
@@ -75,7 +99,7 @@ export async function createContribution(
   })
 }
 
-export async function getGoals(userId: string) {
+export async function getGoalsByUserId(userId: string) {
   return await prisma.goal.findMany({
     where: {
       userId: userId
@@ -83,12 +107,28 @@ export async function getGoals(userId: string) {
   })
 }
 
-export async function getGoalByGoalId(id: string) {
+export async function getGoalByGoalId(id: string, userId:string) {
   return await prisma.goal.findUnique({
     where: {
-      id: id
+      id: id,
+      userId:userId
     }
   })
 }
 
+export async function getAllGoals() {
+  return await prisma.goal.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+}
 
+export async function deleteGoalById(id:string, userId:string){
+  return await prisma.goal.delete({
+    where:{
+      id:id,
+      userId:userId
+    }
+  })
+}

@@ -4,6 +4,7 @@ import * as AuthController from "../controller/AuthController"
 import * as CategoryController from "../controller/CategoryController"
 import * as TransactionController from "../controller/TransactionController"
 import * as BudgetController from "../controller/budgetController"
+import * as GoalController from "../controller/GoalController"
 
 const route = express.Router()
 
@@ -35,6 +36,12 @@ route.get("/totalBudgetAnalytics" , authenticateToken , BudgetController.totalBu
 route.post("/budget" , authenticateToken , BudgetController.createBudget);
 route.put("/budget/:id", authenticateToken, BudgetController.updateBudget)
 route.delete("/budget/:id", authenticateToken, BudgetController.deleteBudget)
+
+route.get("/goal", authenticateToken,GoalController.getGoals );
+route.post("/goal", authenticateToken, GoalController.createGoal);
+route.put("/goal/:id", authenticateToken, GoalController.updateGoal);
+route.delete("/goal/:id", authenticateToken, GoalController.deleteGoalsById);
+route.post("/goal/:id/contribution", authenticateToken, GoalController.createContribution)
 
 
 export default route

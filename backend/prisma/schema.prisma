@@ -10,6 +10,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL") 
 }
 
 model User {
@@ -98,7 +99,7 @@ model Goal {
 model Contribution {
   id     String   @id @default(uuid())
   goalId String
-  goal   Goal     @relation(fields: [goalId], references: [id])
+  goal   Goal     @relation(fields: [goalId], references: [id], onDelete: Cascade)
   amount Float
   date   DateTime @default(now())
 }
