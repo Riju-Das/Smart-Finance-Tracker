@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from "recharts";
-
+import { toast } from 'sonner'
 interface ExpenseByCategory {
   color: string;
   categoryId: string;
@@ -21,7 +21,7 @@ function ExpenseByCategory() {
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message)
+        toast.error(err?.response?.data?.message)
       }
     }
   }

@@ -24,22 +24,26 @@ export async function createGoal(req: AuthenticatedRequest, res: Response) {
 
     let status: GoalStatus;
 
-    if (new Date() > new Date(startDate)) {
+    if (new Date() > new Date(startDate) && new Date() <= new Date(deadline)) {
       status = "IN_PROGRESS"
     }
     else if (new Date() < new Date(startDate)) {
       status = "NOT_STARTED"
     }
+    else if (new Date() > new Date(deadline)) {
+      status = "OVERDUE"
+    }
     else {
       return res.status(400).json({ message: "Error setting up goal status" })
     }
-    const goal = await db.createGoals(user.id, name, description, targetAmount, startDate, deadline, status)
+    const goal = await db.createGoals(user.id, name, description, Number(targetAmount), new Date(startDate), new Date(deadline), status)
 
     console.log(goal);
 
     return res.status(201).json(goal)
   }
   catch (err) {
+    console.log(err)
     return res.status(500).json({ message: "Error creating goals" })
   }
 }
@@ -61,7 +65,7 @@ export async function createContribution(req: AuthenticatedRequest, res: Respons
     if (goal.status === "OVERDUE") return res.status(400).json({ message: "cannot add contribution as goal is overdue" })
 
 
-    const contribution = await db.createContribution(id, amount);
+    const contribution = await db.createContribution(id, Number(amount));
 
     goal = await db.getGoalByGoalId(id, user.id);
 
@@ -75,6 +79,7 @@ export async function createContribution(req: AuthenticatedRequest, res: Respons
     return res.status(201).json(contribution)
   }
   catch (err) {
+    console.log(err)
     return res.status(500).json({ message: "Error creating contribution" })
   }
 }
@@ -118,13 +123,14 @@ export async function updateGoal(req: AuthenticatedRequest, res: Response) {
       return res.status(400).json({ message: "Couldnt update status of ur goal" })
     }
 
-    await db.updateGoals(user.id, id, name, description, targetAmount, startDate, deadline, status);
+    await db.updateGoals(user.id, id, name, description, Number(targetAmount), new Date(startDate), new Date(deadline), status);
 
     return res.status(200).json({ message: "Goal updated successfully" })
 
 
   }
   catch (err) {
+    console.log(err)
     return res.status(500).json({ message: "Error updating goal" })
   }
 }

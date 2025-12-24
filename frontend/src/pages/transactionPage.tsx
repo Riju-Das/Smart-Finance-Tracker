@@ -21,7 +21,7 @@ import { useState, useEffect } from "react";
 import AllTransactions from "../components/AllTransactions";
 import axios from "axios";
 import { useBudgetStore } from '@/store/budgetStore';
-
+import { toast } from 'sonner'
 
 function TransactionPage() {
 
@@ -74,7 +74,7 @@ function TransactionPage() {
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message || "Failed creating a new Transaction")
+        toast.error(err?.response?.data?.message || "Failed creating a new Transaction")
       }
     }
   }
@@ -152,7 +152,7 @@ function TransactionPage() {
 
             <form className="my-5" onSubmit={handleSubmit(onSubmit)}>
               <LabelInputContainer className="mb-7">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description" >Description</Label>
                 <Input
                   required
                   id="description"
@@ -160,7 +160,7 @@ function TransactionPage() {
                   type="text"
                   {...register("description",
                     {
-                      maxLength: { value: 20, message: "Max 20 characters" },
+                      maxLength: { value: 100, message: "Max 100 characters" },
                       minLength: { value: 3, message: "Min 3 characters" },
                       pattern: {
                         value: /^[A-Za-z0-9 .,'&-]{3,50}$/,
@@ -169,7 +169,7 @@ function TransactionPage() {
                     })
                   }
                 />
-                {errors.category && <span className="text-red-500 text-xs">{errors.category.message}</span>}
+                {errors.description && <span className="text-red-500 text-xs">{errors.description.message}</span>}
               </LabelInputContainer>
               <div className="grid md:grid-cols-2 grid-col-1 gap-6">
                 <LabelInputContainer className="flex-1 mb-7">

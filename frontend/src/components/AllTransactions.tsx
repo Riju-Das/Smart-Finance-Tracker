@@ -26,7 +26,7 @@ import { Label } from "@/components/ui/label"
 import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form"
 import { useState } from "react";
-
+import { toast } from 'sonner'
 
 function AllTransactions(){
   interface TransactionFormData {
@@ -68,10 +68,10 @@ function AllTransactions(){
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err.response?.data?.message || "Failed updating Transaction");
+        toast.error(err.response?.data?.message || "Failed updating Transaction");
       }
       else {
-        alert("Failed updating Transaction");
+        toast.error("Failed updating Transaction");
       }
     }
   }
@@ -84,10 +84,10 @@ function AllTransactions(){
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message || "Failed deleting Transaction")
+        toast.error(err?.response?.data?.message || "Failed deleting Transaction")
       }
       else {
-        alert("Failed deleting Transaction")
+        toast.error("Failed deleting Transaction")
       }
     }
   }

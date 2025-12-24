@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useCategoryStore } from '../store/categoryStore';
 import { useBudgetStore } from "@/store/budgetStore";
 import { Progress } from "@/components/ui/progress";
+import { toast } from 'sonner'
 
 interface BudgetProgressProps {
   period?: "MONTH" | "DAY" | "WEEK" | "YEAR";
@@ -42,11 +43,11 @@ function BudgetProgress({ period, showSelfPeriod }: BudgetProgressProps) {
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message || "Failed deleting budgets")
+        toast.error(err?.response?.data?.message || "Failed deleting budgets")
         console.log(err)
       }
       else {
-        alert("Failed deleting budgets")
+        toast.error("Failed deleting budgets")
       }
     }
   }

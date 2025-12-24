@@ -29,7 +29,7 @@ export async function createGoals(
 
 export async function updateGoals(
   userId: string,
-  goalId:string,
+  goalId: string,
   name?: string,
   description?: string,
   targetAmount?: number,
@@ -38,8 +38,8 @@ export async function updateGoals(
   status?: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE"
 ) {
   return await prisma.goal.update({
-    where:{
-      userId:userId,
+    where: {
+      userId: userId,
       id: goalId
     },
     data: {
@@ -53,13 +53,13 @@ export async function updateGoals(
   })
 }
 
-export async function updateGoalStatus(goalId:string, status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE"){
+export async function updateGoalStatus(goalId: string, status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED" | "OVERDUE") {
   return await prisma.goal.update({
-    where:{
-      id:goalId
+    where: {
+      id: goalId
     },
-    data:{
-      status:status
+    data: {
+      status: status
     }
   })
 }
@@ -69,7 +69,7 @@ export async function createContribution(
   amount: number,
 
 ) {
-  return await prisma.$transaction(async (tx)=>{
+  return await prisma.$transaction(async (tx) => {
     const newContribution = await tx.contribution.create({
       data: {
         goalId,
@@ -84,7 +84,7 @@ export async function createContribution(
         amount: true
       }
     });
-  
+
     if (totalContribution._sum.amount) {
       await tx.goal.update({
         where: {
@@ -103,15 +103,18 @@ export async function getGoalsByUserId(userId: string) {
   return await prisma.goal.findMany({
     where: {
       userId: userId
+    },
+    orderBy: {
+      createdAt: "desc"
     }
   })
 }
 
-export async function getGoalByGoalId(id: string, userId:string) {
+export async function getGoalByGoalId(id: string, userId: string) {
   return await prisma.goal.findUnique({
     where: {
       id: id,
-      userId:userId
+      userId: userId
     }
   })
 }
@@ -119,16 +122,16 @@ export async function getGoalByGoalId(id: string, userId:string) {
 export async function getAllGoals() {
   return await prisma.goal.findMany({
     orderBy: {
-      createdAt: "desc",
+      startDate: "desc",
     },
   });
 }
 
-export async function deleteGoalById(id:string, userId:string){
+export async function deleteGoalById(id: string, userId: string) {
   return await prisma.goal.delete({
-    where:{
-      id:id,
-      userId:userId
+    where: {
+      id: id,
+      userId: userId
     }
   })
 }

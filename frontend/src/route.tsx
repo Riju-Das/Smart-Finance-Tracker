@@ -6,7 +6,7 @@ import Dashboard from "./pages/dashboard"
 import TransactionPage from "./pages/transactionPage"
 import CategoryPage from "./pages/categoryPage"
 import BudgetPage from "./pages/budgetPage"
-
+import GoalsPage from "./pages/goalsPage"
 const route = [
   {
     path: "/",
@@ -38,7 +38,12 @@ const route = [
       {
         path:"/budget",
         element: <BudgetPage/>
+      },
+      {
+        path:"/goal",
+        element:<GoalsPage/>
       }
+
     ]
 
 

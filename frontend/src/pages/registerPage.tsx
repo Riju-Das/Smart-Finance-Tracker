@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import api from "../lib/api";
 import axios from "axios";
 import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 function RegisterPage() {
 
@@ -39,7 +40,7 @@ function RegisterPage() {
     }
     catch (err) {
       if(axios.isAxiosError(err)){
-        alert(err.response?.data?.message || "Registration failed")
+        toast.error(err.response?.data?.message || "Registration failed")
       }
     }
   }

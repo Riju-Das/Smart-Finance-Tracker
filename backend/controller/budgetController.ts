@@ -148,6 +148,7 @@ export async function updateBudget(req: AuthenticatedRequest, res: Response) {
     return res.status(200).json(budget)
   }
   catch (err) {
+    console.log(err)
     return res.status(500).json({ message: "Error updating budget" })
   }
 }
@@ -290,17 +291,13 @@ export async function getAllBudgets(req: AuthenticatedRequest, res: Response) {
         }
       })
     )
-
     return res.status(200).json(budgets)
   }
   catch (err) {
     return res.status(500).json({ message: "Error fetching All the budgets" })
   }
 }
-
-
 export function startBudgetCrons() {
-
   cron.schedule("55 1 1 * *", async () => {
     try {
       const monthlyBudgets = await db.getBudgetOfPeriod("MONTH");

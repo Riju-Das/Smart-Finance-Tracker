@@ -95,7 +95,7 @@ function LandingPage() {
             containerClassName="rounded-full"
             as="button"
             onClick={handleStartedClick}
-            className=" bg-white text-black dark:bg-gray-900 dark:text-white flex    items-center space-x-2 cursor-pointer"
+            className="   bg-gray-900 text-white flex    items-center space-x-2 cursor-pointer"
           >
             Get Started
           </HoverBorderGradient>

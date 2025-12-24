@@ -106,6 +106,42 @@ function BudgetPage() {
       <h1 className="2xl:text-5xl md:mb-8 xl:text-4xl text-3xl mb-5 font-semibold text-white">
         Budget
       </h1>
+
+
+      <div>
+        <div >
+          <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl bg-gray-950  text-white  md:text-base text-xs" id="interval" onChange={e => setTotalBudgetPeriod(e.target.value as any)}>
+            <option value="DAY" className="">Daily</option>
+            <option value="MONTH" className="">Monthly</option>
+            <option value="YEAR" className="">Yearly</option>
+            <option value="WEEK" className="">Weekly</option>
+          </select>
+
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Total Budget</div>
+            <div className="md:text-2xl text-xs  font-bold md:mt-2">₹{totalBudgetAnalytics?.TotalBudgetAmount || 0}</div>
+          </div>
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Total Spent</div>
+            <div className="md:text-2xl font-bold text-xs md:mt-2">₹{totalBudgetAnalytics?.totalExpense}</div>
+          </div>
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Remaining</div>
+            <div className="md:text-2xl text-xs font-bold md:mt-2">₹{
+              totalBudgetAnalytics ?
+                totalBudgetAnalytics.TotalBudgetAmount - totalBudgetAnalytics.totalExpense : 0
+            }
+            </div>
+          </div>
+          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
+            <div className="md:text-lg text-xs font-semibold">Budget Used</div>
+            <div className="md:text-2xl text-xs font-bold md:mt-2">{totalBudgetAnalytics?.TotalBudgetPercentage}%</div>
+          </div>
+        </div>
+      </div>
+
       <Dialog open={dialogOpen1} onOpenChange={setDialogOpen1}>
 
         <DialogTrigger asChild>
@@ -185,40 +221,6 @@ function BudgetPage() {
         </DialogContent>
 
       </Dialog>
-
-      <div>
-        <div >
-          <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl bg-gray-950  text-white  md:text-base text-xs" id="interval" onChange={e => setTotalBudgetPeriod(e.target.value as any)}>
-          <option value="DAY" className="">Daily</option>
-            <option value="MONTH" className="">Monthly</option>
-            <option value="YEAR" className="">Yearly</option>
-            <option value="WEEK" className="">Weekly</option>
-          </select>
-
-        </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
-          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
-            <div className="md:text-lg text-xs font-semibold">Total Budget</div>
-            <div className="md:text-2xl text-xs  font-bold md:mt-2">₹{totalBudgetAnalytics?.TotalBudgetAmount || 0}</div>
-          </div>
-          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
-            <div className="md:text-lg text-xs font-semibold">Total Spent</div>
-            <div className="md:text-2xl font-bold text-xs md:mt-2">₹{totalBudgetAnalytics?.totalExpense}</div>
-          </div>
-          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
-            <div className="md:text-lg text-xs font-semibold">Remaining</div>
-            <div className="md:text-2xl text-xs font-bold md:mt-2">₹{
-              totalBudgetAnalytics ?
-                totalBudgetAnalytics.TotalBudgetAmount - totalBudgetAnalytics.totalExpense : 0
-            }
-            </div>
-          </div>
-          <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
-            <div className="md:text-lg text-xs font-semibold">Budget Used</div>
-            <div className="md:text-2xl text-xs font-bold md:mt-2">{totalBudgetAnalytics?.TotalBudgetPercentage}%</div>
-          </div>
-        </div>
-      </div>
 
       <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
         <div>

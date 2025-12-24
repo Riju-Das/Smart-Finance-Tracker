@@ -3,7 +3,7 @@ import api from "@/lib/api";
 import axios from "axios";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { useBudgetStore } from "@/store/budgetStore";
-
+import { toast } from 'sonner'
 interface BudgetProgressProps {
   period?: "MONTH" | "DAY" | "WEEK" | "YEAR";
   showSelfPeriod: true | false
@@ -64,7 +64,7 @@ function AllBudgetTrend({ period, showSelfPeriod }: BudgetProgressProps) {
     catch (err) {
       console.log(err)
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message)
+        toast.error(err?.response?.data?.message)
       }
     }
   }

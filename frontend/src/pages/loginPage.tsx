@@ -7,6 +7,7 @@ import api from "../lib/api";
 import { useAuthStore } from "../store/authStore";
 import axios from "axios";
 import { useEffect } from 'react'
+import { toast } from 'sonner'
 
 function LoginPage() {
 
@@ -54,7 +55,7 @@ function LoginPage() {
           setError("username", { type: "manual", message: msg })
         }
         else {
-          alert(msg)
+          toast.error(msg)
         }
       }
     }

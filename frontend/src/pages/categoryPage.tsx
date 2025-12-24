@@ -16,9 +16,10 @@ import { cn } from "@/lib/utils";
 import { useForm } from "react-hook-form"
 import api from '../lib/api';
 import { useNavigate } from 'react-router-dom';
-import { useState , useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useBudgetStore } from '@/store/budgetStore';
+import { toast } from 'sonner'
 
 function CategoryPage() {
 
@@ -71,10 +72,10 @@ function CategoryPage() {
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message || "Failed creating a new category")
+        toast.error(err?.response?.data?.message || "Failed creating a new category")
       }
       else {
-        alert("Failed creating a new category")
+        toast.error("Failed creating a new category")
       }
     }
   }
@@ -92,10 +93,10 @@ function CategoryPage() {
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message || "Failed updating category")
+        toast.error(err?.response?.data?.message || "Failed updating category")
       }
       else {
-        alert("Failed updating category")
+        toast.error("Failed updating category")
       }
     }
   }
@@ -107,10 +108,10 @@ function CategoryPage() {
     catch (err) {
       console.log(err);
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message || "Failed deleting category")
+        toast.error(err?.response?.data?.message || "Failed deleting category")
       }
       else {
-        alert("Failed deleting category")
+        toast.error("Failed deleting category")
       }
     }
   }
@@ -122,61 +123,7 @@ function CategoryPage() {
       <h1 className="2xl:text-5xl md:mb-8 xl:text-4xl text-3xl mb-5 font-semibold text-white">
         Category
       </h1>
-      <div>
 
-        <Dialog open={dialogOpen1} onOpenChange={setDialogOpen1}>
-
-          <DialogTrigger asChild>
-            <button className="px-8 py-2 rounded-full relative bg-gray-950 cursor-pointer text-white text-sm hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600" onClick={() => setDialogOpen1(true)}>
-              <div className="absolute inset-x-0 h-px w-1/2 mx-auto   -top-px shadow-2xl  bg-gradient-to-r from-transparent via-teal-500 to-transparent" />
-              <span className="relative z-20 text-center flex justify-center items-center">
-                <span className='text-xl text-center'>+&nbsp; </span>  Category
-              </span>
-            </button>
-          </DialogTrigger>
-
-          <DialogContent className="sm:max-w-[425px] bg-black border-none text-white">
-
-            <DialogHeader>
-              <DialogTitle>Add Category</DialogTitle>
-            </DialogHeader>
-
-            <form className="my-5" onSubmit={handleSubmit(onSubmit)}>
-              <LabelInputContainer className="mb-7">
-                <Input
-                  required
-                  id="category"
-                  placeholder="Write Category Name"
-                  type="text"
-                  {...register("category")}
-                />
-              </LabelInputContainer>
-              <LabelInputContainer className="mb-7">
-                <Input
-                  required
-                  id="color"
-                  type="color"
-                  {...register("color")}
-                />
-              </LabelInputContainer>
-
-              <button
-                className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
-                type="submit"
-              >
-                Submit &rarr;
-                <BottomGradient />
-              </button>
-
-
-              <div className="mt-5 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
-
-            </form>
-          </DialogContent>
-
-        </Dialog>
-
-      </div>
       <div className="grid grid-cols-2 md:grid-cols-4 md:gap-6 gap-3 my-8 ">
         <div className="bg-gray-950/50 border-1 border-white/10 rounded-xl md:p-6 p-3 px-4 text-white shadow">
           <div className="md:text-lg text-xs font-semibold">Total Categories</div>
@@ -195,6 +142,62 @@ function CategoryPage() {
           <div className="md:text-2xl text-xs font-bold md:mt-2">Food</div>
         </div>
       </div>
+
+
+
+      <Dialog open={dialogOpen1} onOpenChange={setDialogOpen1}>
+
+        <DialogTrigger asChild>
+          <button className="px-8 py-2 rounded-full relative bg-gray-950 cursor-pointer text-white text-sm hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600" onClick={() => setDialogOpen1(true)}>
+            <div className="absolute inset-x-0 h-px w-1/2 mx-auto   -top-px shadow-2xl  bg-gradient-to-r from-transparent via-teal-500 to-transparent" />
+            <span className="relative z-20 text-center flex justify-center items-center">
+              <span className='text-xl text-center'>+&nbsp; </span>  Category
+            </span>
+          </button>
+        </DialogTrigger>
+
+        <DialogContent className="sm:max-w-[425px] bg-black border-none text-white">
+
+          <DialogHeader>
+            <DialogTitle>Add Category</DialogTitle>
+          </DialogHeader>
+
+          <form className="my-5" onSubmit={handleSubmit(onSubmit)}>
+            <LabelInputContainer className="mb-7">
+              <Input
+                required
+                id="category"
+                placeholder="Write Category Name"
+                type="text"
+                {...register("category")}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer className="mb-7">
+              <Input
+                required
+                id="color"
+                type="color"
+                {...register("color")}
+              />
+            </LabelInputContainer>
+
+            <button
+              className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
+              type="submit"
+            >
+              Submit &rarr;
+              <BottomGradient />
+            </button>
+
+
+            <div className="mt-5 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
+
+          </form>
+        </DialogContent>
+
+      </Dialog>
+
+
 
       <div className='grid grid-cols-1  gap-6 my-8 '>
 

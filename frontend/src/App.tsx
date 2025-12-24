@@ -10,6 +10,8 @@ import { useTransactionStore } from './store/transactionStore'
 import axios from 'axios'
 import { useBudgetStore } from './store/budgetStore'
 import { Satellite } from 'lucide-react'
+import { useGoalStore } from './store/goalStore'
+import { Toaster } from 'sonner'
 
 function App() {
   const navigate = useNavigate();
@@ -24,10 +26,12 @@ function App() {
   const [categoryLoaded, setCategoryLoaded] = useState(false)
   const [transactionLoaded, setTransactionLoaded] = useState(false)
   const [budgetLoaded, setBudgetLoaded] = useState(false)
+  const [goalsLoaded, setGoalsLoaded] = useState(false)
 
   const setCategories = useCategoryStore((state) => state.setCategories)
   const setTransactions = useTransactionStore((state) => state.setTransactions)
-  const setBudgets = useBudgetStore((state)=>state.setBudgets)
+  const setBudgets = useBudgetStore((state) => state.setBudgets)
+  const setGoals = useGoalStore((state) => state.setGoals)
 
   const fetchTransactionSummary = useTransactionStore((state) => state.fetchTransactionSummary)
 
@@ -82,15 +86,28 @@ function App() {
     }
   }
 
-  async function fetchBudgets(){
-    try{
+  async function fetchBudgets() {
+    try {
       const res = await api.get("/budget");
       setBudgets(res.data);
       setBudgetLoaded(true)
     }
-    catch(err){
-      if(axios.isAxiosError(err)){
+    catch (err) {
+      if (axios.isAxiosError(err)) {
         alert(err?.response?.data?.message || "Failed to fetch Budgets")
+      }
+    }
+  }
+
+  async function fetchGoals() {
+    try {
+      const res = await api.get("/goal");
+      setGoals(res.data);
+      setGoalsLoaded(true)
+    }
+    catch (err) {
+      if (axios.isAxiosError(err)) {
+        alert(err?.response?.data?.message || "Failed to fetch Goals")
       }
     }
   }
@@ -100,6 +117,7 @@ function App() {
       fetchTransactions()
       fetchCategories()
       fetchBudgets()
+      fetchGoals()
     }
   }, [loaded])
 
@@ -109,21 +127,27 @@ function App() {
   }, [accessToken, user, setAccessToken, setUser, logout])
 
   return (
-    loaded && categoryLoaded && transactionLoaded && budgetLoaded ? (
-      <div className='flex flex-col md:flex-row min-h-screen h-screen'>
-        <Navbar />
+    <>
+      <Toaster position="top-right" richColors />
+      {
+        loaded && categoryLoaded && transactionLoaded && budgetLoaded && goalsLoaded ? (
+          <div className='flex flex-col md:flex-row min-h-screen h-screen'>
+            <Navbar />
 
-        <main className=' flex-1 h-screen overflow-hidden '>
-          <div className="h-full overflow-y-auto">
-            <Outlet />
+            <main className=' flex-1 h-screen overflow-hidden '>
+              <div className="h-full overflow-y-auto">
+                <Outlet />
+              </div>
+            </main>
           </div>
-        </main>
-      </div>
-    ) : (
-      <div className='w-screen h-screen bg-black flex items-center justify-center'>
-        <LoaderOne />
-      </div>
-    )
+        ) : (
+          <div className='w-screen h-screen bg-black flex items-center justify-center'>
+            <LoaderOne />
+          </div>
+        )
+      }
+
+    </>
 
   )
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "@/lib/api";
 import axios from "axios";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
-
+import { toast } from 'sonner'
 interface MonthlyTransaction {
   date: string;
   income: number;
@@ -22,7 +22,7 @@ function MonthlyTransactionAnalytics() {
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message)
+        toast.error(err?.response?.data?.message)
       }
     }
   }
