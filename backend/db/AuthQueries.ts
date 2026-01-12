@@ -2,8 +2,26 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient();
 
+
+const DEFAULT_CATEGORIES = [
+
+  { name: "Food & Dining", color: "#FF6B6B" },
+  { name: "Transportation", color: "#4ECDC4" },
+  { name: "Housing", color: "#45B7D1" },
+  { name: "Shopping", color: "#FFA07A" },
+  { name: "Healthcare", color: "#98D8C8" },
+  { name: "Entertainment", color: "#F7DC6F" },
+  { name: "Education", color: "#BB8FCE" },
+  { name: "Bills & Utilities", color: "#85C1E2" },
+  { name: "Travel", color: "#F8B739" },
+
+  { name: "Salary", color: "#52B788" },
+  { name: "Freelance", color: "#74C69D" },
+  { name: "Other Income", color: "#95D5B2" },
+];
+
 async function createUser(username: string, fullname: string, email: string, password: string) {
-  return await prisma.user.create({
+  const user= await prisma.user.create({
     data: {
       username,
       fullname,
@@ -11,6 +29,15 @@ async function createUser(username: string, fullname: string, email: string, pas
       password
     }
   });
+
+  await prisma.category.createMany({
+    data: DEFAULT_CATEGORIES.map(cat=>({
+      name:cat.name,
+      color: cat.color,
+      userId: user.id 
+    }))
+  });
+  return user;
 }
 
 async function findUserByUsername(username: string) {

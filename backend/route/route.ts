@@ -30,6 +30,8 @@ route.get("/transactions/expenseByCategory" , authenticateToken , TransactionCon
 
 route.get("/transactions/timeseries" , authenticateToken , TransactionController.getTransactionTimeseries)
 
+route.post("/transactions/import-csv", authenticateToken, TransactionController.uploadCSVMiddleware , TransactionController.importCSVTransactions );
+
 route.get("/budget", authenticateToken, BudgetController.getBudgets )
 route.get("/budget/all", authenticateToken, BudgetController.getAllBudgets)
 route.get("/totalBudgetAnalytics" , authenticateToken , BudgetController.totalBudgetAnalytics)
