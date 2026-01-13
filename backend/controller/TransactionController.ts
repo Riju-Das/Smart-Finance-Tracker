@@ -16,9 +16,14 @@ interface AuthenticatedRequest extends Request {
 async function getTransactionByUserId(req: AuthenticatedRequest, res: Response) {
   try {
     const user = req.user;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 25;
+
     if (!user || !user.id) return res.status(401).json({ message: "Unauthorized" })
-    const transaction = await db.getTransactionByUserId(user.id)
-    return res.status(200).json(transaction)
+
+    const result = await db.getTransactionByUserId(user.id , page , limit)
+
+    return res.status(200).json(result)
   }
   catch (err) {
     return res.status(500).json({ message: "Couldn't fetch the transactions" })
@@ -147,7 +152,7 @@ async function getTransactionSummary(req: AuthenticatedRequest, res: Response) {
   try {
     const user = req.user
     if (!user) return res.status(401).json({ message: "Unauthorized" });
-    const transactions = await db.getTransactionByUserId(user.id);
+    const transactions = await db.getAllTransactionByUserId(user.id);
     let totalIncome = 0
     let totalExpense = 0
 
@@ -213,7 +218,7 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
 
   const interval = req.query.interval as "day" | "month" | "year"
 
-  const transaction = await db.getTransactionByUserId(user.id);
+  const transaction = await db.getAllTransactionByUserId(user.id);
 
   if(transaction.length === 0) return res.json({interval, data:[]});
 
