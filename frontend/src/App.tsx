@@ -29,7 +29,7 @@ function App() {
   const [goalsLoaded, setGoalsLoaded] = useState(false)
 
   const setCategories = useCategoryStore((state) => state.setCategories)
-  const setTransactions = useTransactionStore((state) => state.setTransactions)
+  const fetchTransactionsStore = useTransactionStore((state) => state.fetchTransactions)
   const setBudgets = useBudgetStore((state) => state.setBudgets)
   const setGoals = useGoalStore((state) => state.setGoals)
 
@@ -71,18 +71,14 @@ function App() {
 
   async function fetchTransactions() {
     try {
-      const res = await api.get("/transactions");
-      setTransactions(res.data);
+      await fetchTransactionsStore();
       setTransactionLoaded(true)
-
       await fetchTransactionSummary()
-
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
         alert(err?.response?.data?.message || "Failed to fetch transactions")
       }
-
     }
   }
 

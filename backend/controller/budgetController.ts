@@ -297,8 +297,10 @@ export async function getAllBudgets(req: AuthenticatedRequest, res: Response) {
     return res.status(500).json({ message: "Error fetching All the budgets" })
   }
 }
+
+
 export function startBudgetCrons() {
-  cron.schedule("55 1 1 * *", async () => {
+  cron.schedule("0 0 1 * *", async () => {
     try {
       const monthlyBudgets = await db.getBudgetOfPeriod("MONTH");
       console.log(monthlyBudgets)
@@ -325,7 +327,7 @@ export function startBudgetCrons() {
     }
   })
 
-  cron.schedule("25 1 * * *", async () => {
+  cron.schedule("0 0 * * *", async () => {
     try {
       const dailyBudgets = await db.getBudgetOfPeriod("DAY");
       console.log("cron running")

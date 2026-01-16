@@ -2,6 +2,7 @@ import { useTransactionStore } from "../store/transactionStore"
 import { useCategoryStore } from "../store/categoryStore";
 import api from "../lib/api";
 import axios from "axios";
+import TransactionPagination from "./TransactionPagination";
 import {
   Table,
   TableBody,
@@ -28,7 +29,7 @@ import { useForm } from "react-hook-form"
 import { useState } from "react";
 import { toast } from 'sonner'
 
-function AllTransactions(){
+function AllTransactions() {
   interface TransactionFormData {
     description: string;
     type: "INCOME" | "EXPENSE";
@@ -45,6 +46,7 @@ function AllTransactions(){
 
   const fetchTransactionSummary = useTransactionStore((state) => state.fetchTransactionSummary)
   const transactions = useTransactionStore((state) => state.transactions)
+  const pagination = useTransactionStore((state) => state.pagination)
   const categories = useCategoryStore((state) => state.categories)
   const fetchTransactions = useTransactionStore((state) => state.fetchTransactions)
   const [categorySort, setCategorySort] = useState<string>("")
@@ -200,7 +202,7 @@ function AllTransactions(){
                               <DialogHeader>
                                 <DialogTitle>Update Transaction</DialogTitle>
                               </DialogHeader>
-                              
+
                               <form className="my-5" onSubmit={handleSubmit((data) => onSubmit(data, transaction.id))} >
                                 <LabelInputContainer className="mb-7">
                                   <Label htmlFor="description">Description</Label>
@@ -317,9 +319,14 @@ function AllTransactions(){
           )
         }
       </div>
+
+      <TransactionPagination
+        pagination={pagination}
+        onPageChange={(page) => fetchTransactions(page)}
+      />
     </div>
   );
-};
+}
 
 
 const BottomGradient = () => {

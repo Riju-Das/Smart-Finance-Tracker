@@ -26,14 +26,28 @@ async function createBudget(budget: Budget) {
     }
   })
 
-  return await prisma.budget.create({
-    data: {
+  return await prisma.budget.upsert({
+    where:{
+      userId_categoryId_period_startDate:{
+        userId: budget.userId,
+        categoryId: budget.categoryId,
+        period: budget.period,
+        startDate: budget.startDate
+      }
+    },
+    update:{
+      amount: budget.amount,
+      endDate:budget.endDate,
+      active:true
+    },
+    create: {
       userId: budget.userId,
       categoryId: budget.categoryId,
       period: budget.period,
       amount: budget.amount,
       startDate: budget.startDate,
-      endDate: budget.endDate
+      endDate: budget.endDate,
+      active:true
     }
   })
 }
@@ -157,7 +171,8 @@ async function cleanupOldBudgets(userId: string, categoryId: string, period: Bud
     where: {
       userId: userId,
       categoryId: categoryId,
-      period: period
+      period: period,
+      active:false
     },
     orderBy: {
       startDate: "desc"

@@ -7,8 +7,6 @@ import { startBudgetCrons } from "./controller/budgetController";
 import { startGoalCron } from "./controller/GoalController";
 
 
-// Test Gemini API on startup
-
 config()
 startBudgetCrons()
 startGoalCron()

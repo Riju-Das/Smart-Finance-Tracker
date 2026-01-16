@@ -27,6 +27,7 @@ function BudgetPage() {
 
   useEffect(() => {
     document.title = 'Budget Progress - Budget Buddy';
+    fetchBudgets();
 
   }, []);
 
