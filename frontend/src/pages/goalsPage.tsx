@@ -20,6 +20,7 @@ import api from '@/lib/api';
 import { Tabs } from "@/components/ui/tabs";
 import GoalProgress from '@/components/goalProgress';
 import GoalAnalytics from '@/components/GoalAnalytics';
+import { toast } from 'sonner';
 
 export default function GoalsPage() {
 
@@ -67,10 +68,10 @@ export default function GoalsPage() {
     catch (err) {
       if (axios.isAxiosError(err)) {
         console.log(err)
-        alert(err?.response?.data || "Failed creating a new budget")
+        toast.error(err?.response?.data || "Failed creating a new budget")
       }
       else {
-        alert("Failed creating a new budget")
+        toast.error("Failed creating a new budget")
       }
     }
   }

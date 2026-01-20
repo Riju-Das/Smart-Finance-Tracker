@@ -12,6 +12,7 @@ import { useBudgetStore } from './store/budgetStore'
 import { Satellite } from 'lucide-react'
 import { useGoalStore } from './store/goalStore'
 import { Toaster } from 'sonner'
+import { toast } from 'sonner'
 
 function App() {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ function App() {
     }
     catch (err) {
       if (axios.isAxiosError(err)) {
-        alert(err?.response?.data?.message || "Failed to fetch categories")
+        toast.error(err?.response?.data?.message || "Failed to fetch categories")
       }
     }
   }

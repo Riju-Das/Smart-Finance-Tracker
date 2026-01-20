@@ -3,6 +3,7 @@ import api from "@/lib/api";
 import axios from "axios";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { toast } from 'sonner'
+
 interface MonthlyTransaction {
   date: string;
   income: number;
@@ -33,11 +34,11 @@ function MonthlyTransactionAnalytics() {
 
   return (
     <div className="flex flex-col border-1 border-white/10  md:p-5  p-2 gap-5 rounded-2xl  2xl:h-140 md:h-100 h-80 bg-gray-950">
-      <div className=" text-center md:text-start md:text-3xl font-bold ">
+      <div className=" text-center md:text-start md:text-3xl font-bold text-white">
         Transaction Trends
       </div>
       <div>
-        <select name="interval" className="p-1 px-3 border-1 border-white/10 rounded-2xl md:text-base text-xs" id="interval" onChange={e => setInterval(e.target.value as any)}>
+        <select name="interval" className="p-1 px-3 border-1 text-white border-white/10 rounded-2xl md:text-base text-xs" id="interval" onChange={e => setInterval(e.target.value as any)}>
           <option value="month" className="bg-black">Monthly</option>
           <option value="day" className="bg-black">Daily</option>
           <option value="year" className="bg-black">Yearly</option>

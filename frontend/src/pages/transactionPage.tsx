@@ -250,16 +250,6 @@ function TransactionPage() {
 
         <ImportCSV onImportSuccess={handleImportSuccess} />
 
-        <button className="md:px-5 py-2 px-5 flex items-center justify-center  rounded-lg relative bg-gray-950 cursor-pointer text-white md:text-sm text-xs hover:shadow-2xl hover:shadow-white/[0.1] transition duration-200 border border-slate-600 text-center">
-          <span className='text-xs text-center flex justify-center items-center'>
-            <svg fill="#ffffff" width="20" height="20" viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg" data-iconid="import" data-svgname="Import">
-              <path d="M21,14a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V15a1,1,0,0,0-2,0v4a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V15A1,1,0,0,0,21,14Zm-9.71,1.71a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l4-4a1,1,0,0,0-1.42-1.42L13,12.59V3a1,1,0,0,0-2,0v9.59l-2.29-2.3a1,1,0,1,0-1.42,1.42Z" />
-            </svg>
-            &nbsp;
-          </span>  Export
-        </button>
-
       </div>
 
       <Tabs tabs={tabs}

@@ -168,9 +168,9 @@ async function getTransactionSummary(req: AuthenticatedRequest, res: Response) {
     const netAmount = totalIncome - totalExpense;
 
     return res.status(200).json({
-      totalIncome,
-      totalExpense,
-      netAmount
+      totalIncome: parseFloat(totalIncome.toFixed(2)),
+      totalExpense: parseFloat(totalExpense.toFixed(2)),
+      netAmount: parseFloat(netAmount.toFixed(2))
     })
 
   }
@@ -249,8 +249,7 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
   })
 
   let chartData:chartData[] = [];
-  let totalIncome = 0;
-  let totalExpense = 0;
+
 
   const sortedDates = Object.keys(group).sort();
 
@@ -261,9 +260,9 @@ async function getTransactionTimeseries(req:AuthenticatedRequest, res:Response){
     const net = income - expense;
     chartData.push({
       date: date,
-      income:income,
-      expense:expense,
-      netAmount:net,
+      income:parseFloat(income.toFixed(2)),
+      expense:parseFloat(expense.toFixed(2)),
+      netAmount:parseFloat(net.toFixed(2)),
     })
   }
 

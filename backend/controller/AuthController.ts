@@ -37,11 +37,17 @@ function generateRefreshToken(user:User) {
 
 async function register(req:Request, res:Response) {
   try {
+
     const { username, fullname, email, password } = req.body;
+
     const existing = await db.findUserByUsername(username);
+
     if (existing) return res.status(400).json({ message: "User already exists" })
+
     const hashedPassword = await bcrypt.hash(password, 10)
+
     const user = await db.createUser(username, fullname, email, hashedPassword)
+
     res.json({ message: "user registered", user: { id: user.id, username: user.username, fullname: user.fullname } });
   }
   catch (err) {

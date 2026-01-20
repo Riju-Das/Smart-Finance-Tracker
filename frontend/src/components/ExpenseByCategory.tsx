@@ -33,7 +33,7 @@ function ExpenseByCategory() {
 
   return (
     <div className="flex flex-col border-1 border-white/10  md:p-5 p-2 gap-5 rounded-2xl  2xl:h-140 md:h-100  h-80 bg-gray-950">
-      <div className=" text-center  font-bold md:text-start md:text-3xl">
+      <div className=" text-center  font-bold md:text-start md:text-3xl text-white">
         Expense By Category
       </div>
       <div className="min-h-[80%] w-full ">
