@@ -241,9 +241,7 @@ export default function GoalsPage() {
 
       </Dialog>
 
-      <Tabs tabs={tabs}
-        contentClassName="w-full bg-black rounded-xl"
-      />
+      <GoalProgress />
 
 
     </div>

@@ -57,7 +57,7 @@ function Navbar() {
       label: "Goals",
       to:"/goal",
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0 text-neutral-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0 text-neutral-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>
       ),
     },
     {
@@ -89,10 +89,10 @@ function Navbar() {
               icon: (
                 <img
 
-                  className="h-7 w-7 shrink-0 rounded-full"
+                  className="h-0 w-0 shrink-0 rounded-full"
                   width={50}
                   height={50}
-                  alt="Avatar"
+    
                 />
               ),
             }}
