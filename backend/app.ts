@@ -15,8 +15,8 @@ startGoalCron()
 const app = express()
 
 const generalLimiter = rateLimit({
-  windowMs: 8 * 60 * 1000,
-  max: 100,
+  windowMs: 5 * 60 * 1000,
+  max: 500,
   handler: (req, res) => {
     return res.status(429).json({
       success: false,

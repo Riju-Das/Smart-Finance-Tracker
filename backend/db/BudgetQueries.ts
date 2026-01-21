@@ -156,6 +156,7 @@ async function getTotalExpenseOfBudget(
     where: {
       userId: userId,
       categoryId: categoryId,
+      type: "EXPENSE",
       date: {
         gte: new Date(startDate),
         lt: new Date(endDate)
