@@ -66,6 +66,9 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 app.use("/api/login", authLimiter);
 app.use("/api/register", authLimiter);
