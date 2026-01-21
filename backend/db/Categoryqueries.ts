@@ -1,55 +1,53 @@
-import { PrismaClient } from "@prisma/client"
+import prisma from "./prisma";
 
-const prisma = new PrismaClient()
-
-async function getCategoryByUserId(id:string){
+async function getCategoryByUserId(id: string) {
   return await prisma.category.findMany({
-    where:{
-      userId:id
+    where: {
+      userId: id
     },
-    orderBy:{
+    orderBy: {
       date: 'desc'
     }
   })
 }
 
-async function getUserIdByCategoryById(id:string){
+async function getUserIdByCategoryById(id: string) {
   return await prisma.category.findUnique({
-    where:{
-      id:id
+    where: {
+      id: id
     },
-    select:{
-      userId:true
+    select: {
+      userId: true
     }
   })
 }
 
-async function createCategory(id:string,name:string, color:string){
+async function createCategory(id: string, name: string, color: string) {
   return await prisma.category.create({
-    data:{
-      name:name,
-      userId:id,
+    data: {
+      name: name,
+      userId: id,
       color: color
     }
   })
 }
 
-async function updateCategoryById(id:string ,name:string, color:string){
+async function updateCategoryById(id: string, name: string, color: string) {
   return await prisma.category.update({
-    where:{
-      id:id
+    where: {
+      id: id
     },
-    data:{
-      name:name,
-      color:color
+    data: {
+      name: name,
+      color: color
     }
   })
 }
 
-async function deleteCategoryById(id:string){
+async function deleteCategoryById(id: string) {
   return await prisma.category.delete({
-    where:{
-      id:id
+    where: {
+      id: id
     }
   })
 }

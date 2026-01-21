@@ -1,7 +1,5 @@
-import { PrismaClient, type BudgetPeriod } from "@prisma/client";
-
-
-const prisma = new PrismaClient()
+import { type BudgetPeriod } from "@prisma/client";
+import prisma from "./prisma";
 
 interface Budget {
   userId: string
@@ -27,18 +25,18 @@ async function createBudget(budget: Budget) {
   })
 
   return await prisma.budget.upsert({
-    where:{
-      userId_categoryId_period_startDate:{
+    where: {
+      userId_categoryId_period_startDate: {
         userId: budget.userId,
         categoryId: budget.categoryId,
         period: budget.period,
         startDate: budget.startDate
       }
     },
-    update:{
+    update: {
       amount: budget.amount,
-      endDate:budget.endDate,
-      active:true
+      endDate: budget.endDate,
+      active: true
     },
     create: {
       userId: budget.userId,
@@ -47,12 +45,12 @@ async function createBudget(budget: Budget) {
       amount: budget.amount,
       startDate: budget.startDate,
       endDate: budget.endDate,
-      active:true
+      active: true
     }
   })
 }
 
-async function getBudgets(userId: string, period?:BudgetPeriod) {
+async function getBudgets(userId: string, period?: BudgetPeriod) {
   return await prisma.budget.findMany({
     where: {
       userId: userId,
@@ -68,12 +66,12 @@ async function getBudgets(userId: string, period?:BudgetPeriod) {
   })
 }
 
-async function getAllBudgets(userId: string, categoryId:string , period:BudgetPeriod) {
+async function getAllBudgets(userId: string, categoryId: string, period: BudgetPeriod) {
   return await prisma.budget.findMany({
     where: {
       userId: userId,
-      period:period,
-      categoryId:categoryId
+      period: period,
+      categoryId: categoryId
     },
     orderBy: {
       startDate: "asc"
@@ -84,7 +82,7 @@ async function getAllBudgets(userId: string, categoryId:string , period:BudgetPe
   })
 }
 
-async function getTotalBudgetAmount(userId: string, period?:BudgetPeriod){
+async function getTotalBudgetAmount(userId: string, period?: BudgetPeriod) {
   return await prisma.budget.aggregate({
     _sum: {
       amount: true
@@ -123,12 +121,12 @@ async function updateBudget(id: string, budget: Budget) {
 
 
 
-async function deleteBudget(userId: string, categoryId: string, period:BudgetPeriod) {
+async function deleteBudget(userId: string, categoryId: string, period: BudgetPeriod) {
   return await prisma.budget.deleteMany({
     where: {
-      userId:userId,
-      categoryId:categoryId,
-      period:period
+      userId: userId,
+      categoryId: categoryId,
+      period: period
     }
   })
 }
@@ -172,7 +170,7 @@ async function cleanupOldBudgets(userId: string, categoryId: string, period: Bud
       userId: userId,
       categoryId: categoryId,
       period: period,
-      active:false
+      active: false
     },
     orderBy: {
       startDate: "desc"

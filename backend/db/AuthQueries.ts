@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-
-const prisma = new PrismaClient();
+import prisma from './prisma';
 
 
 const DEFAULT_CATEGORIES = [
@@ -21,7 +19,7 @@ const DEFAULT_CATEGORIES = [
 ];
 
 async function createUser(username: string, fullname: string, email: string, password: string) {
-  const user= await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       username,
       fullname,
@@ -31,10 +29,10 @@ async function createUser(username: string, fullname: string, email: string, pas
   });
 
   await prisma.category.createMany({
-    data: DEFAULT_CATEGORIES.map(cat=>({
-      name:cat.name,
+    data: DEFAULT_CATEGORIES.map(cat => ({
+      name: cat.name,
       color: cat.color,
-      userId: user.id 
+      userId: user.id
     }))
   });
   return user;
@@ -92,7 +90,7 @@ async function findUserByRefreshToken(token: string) {
   });
 }
 
-export{
+export {
   createUser,
   findUserByUsername,
   saveRefreshToken,
