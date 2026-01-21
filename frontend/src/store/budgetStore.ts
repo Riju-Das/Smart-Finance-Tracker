@@ -32,5 +32,6 @@ export const useBudgetStore = create<BudgetStore>((set)=>({
   fetchBudgets: async ()=>{
     const res = await api.get("/budget");
     set({budgets: res.data})
+    
   }
 }))

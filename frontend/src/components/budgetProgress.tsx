@@ -29,7 +29,7 @@ interface BudgetProgressProps {
 function BudgetProgress({ period, showSelfPeriod }: BudgetProgressProps) {
 
 
-  
+
   const budgets = useBudgetStore((state) => state.budgets)
   const [currentPeriod, setCurrentPeriod] = useState<"MONTH" | "YEAR" | "DAY" | "WEEK">("MONTH")
   const categories = useCategoryStore((state) => state.categories)
@@ -75,8 +75,8 @@ function BudgetProgress({ period, showSelfPeriod }: BudgetProgressProps) {
       <div>
         {
           budgets
-            .filter(budget => budget.budget.period === currentPeriod).length > 0 ?
-            (
+            .filter(budget => budget.budget.period === (showSelfPeriod === true ? currentPeriod : period)).length > 0
+            ? (
               budgets
                 .filter(budget => budget.budget.period === (showSelfPeriod === true ? currentPeriod : period))
                 .map((budget, idx) =>
